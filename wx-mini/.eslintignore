@@ -1,0 +1,13 @@
+src/lib/*.js
+src/lib/**/*.js
+dist/**/*.js
+src/packageDMs/**/**/*
+src/packageDMs/**/*
+src/components/*
+src/components/**/*
+src/store/*
+src/service/*
+src/pages/*
+src/pages/**/*
+src/*
+src/custom-tab-bar/*

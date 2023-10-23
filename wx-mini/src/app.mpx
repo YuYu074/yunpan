@@ -1,0 +1,83 @@
+<script>
+import mpx, { createApp } from '@mpxjs/core'
+import apiProxy from '@mpxjs/api-proxy'
+import { createPinia } from '@mpxjs/pinia'
+
+mpx.use(apiProxy, { usePromise: true })
+mpx.use(createPinia())
+
+createApp({
+  onLaunch() {
+    // 判断是否是iPhoneX
+    const isIPhoneX = () => {
+      let screenHeight = wx.getSystemInfoSync().screenHeight
+      let bottom = wx.getSystemInfoSync().safeArea.bottom
+      return screenHeight !== bottom
+    }
+    this.globalData.isIPhoneX = isIPhoneX()
+  },
+  globalData: {
+    isIPhoneX: false
+  }
+})
+</script>
+
+<style>
+  /*此处编写全局样式*/
+  page {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial,
+      Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    color: text;
+    --sidebar-selected-border-color: theme;
+  }
+  .van-notice-bar__content {
+    white-space: pre !important;
+  }
+</style>
+
+<script type="application/json">
+  {
+    "pages": [
+      "./pages/login/login",
+      "./pages/index",
+      "./pages/tabbar/tabbar1",
+      "./pages/tabbar/tabbar2",
+      "./pages/tabbar/tabbar3"
+    ],
+    "window": {
+      "navigationBarBackgroundColor": "#ffffff",
+      "navigationBarTextStyle": "black",
+      "navigationBarTitleText": "小鱼网盘",
+      "enablePullDownRefresh": false
+    },
+    "tabBar": {
+      "custom": true,
+      "color": "#666666",
+      "selectedColor": "#1A85FF",
+      "borderStyle": "black",
+      "backgroundColor": "#FFFFFF",
+      "position": "bottom",
+      "list": [
+        {
+          "pagePath": "pages/tabbar/tabbar1"
+        },
+        {
+          "pagePath": "pages/tabbar/tabbar2"
+        },
+        {
+          "pagePath": "pages/tabbar/tabbar3"
+        }
+      ]
+    },
+    "debug": true,
+    "permission": {
+      "scope.userLocation": {
+        "desc": "你的位置信息将用于小程序定位您的位置"
+      }
+    },
+    "requiredPrivateInfos": ["getLocation", "chooseLocation"],
+    "networkTimeout": {
+      "uploadFile": 9000
+    }
+  }
+</script>
