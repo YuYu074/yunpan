@@ -1,0 +1,60 @@
+.zan-dialog__mask 
+  position fixed
+  top 0
+  left 0
+  right 0
+  bottom 0
+  z-index 10
+  background rgba(0,0,0,0.5)
+  display none
+.zan-dialog__container 
+  position fixed
+  top 45%
+  left 50%
+  transform translateY(500%)
+  z-index 12
+  border-radius 20rpx
+.zan-dialog--show 
+  .zan-dialog__container 
+    transform translate(-50%, -50%)
+    .content 
+      display flex
+      flex-direction column
+      justify-content center
+      align-items center
+      .image 
+        position relative
+        .num-text 
+          position absolute
+          top 36.5%
+          left 50%
+          transform translate(-50%, 0)
+          color #feecd2
+          font-size 24px
+          font-weight bold
+        .rank-text 
+          position absolute
+          top 55%
+          left 50%
+          transform translate(-50%, 0)
+          color #feecd2
+          font-size 36px
+          font-weight bold
+        .time-text 
+          position absolute
+          top 23%
+          left 54%
+          transform translate(-50%, 0)
+          color #fbe8ad
+          font-size 22rpx
+          font-weight bold
+        .store-text 
+          position absolute
+          top 29%
+          left 50%
+          transform translate(-50%, 0)
+          color #fbe8ad
+          font-size 20rpx
+          font-weight bold
+  .zan-dialog__mask 
+    display block

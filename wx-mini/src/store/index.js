@@ -1,16 +1,16 @@
-import { defineStore } from "@mpxjs/pinia";
-import { ref, computed } from "@mpxjs/core";
+import { defineStore } from "@mpxjs/pinia"
+import { ref, computed } from "@mpxjs/core"
 
 const useSetupStore = defineStore("useSetup", () => {
-  let tabbarIndex = ref(-1);
-  const getTabbarIndex = computed(() => tabbarIndex.value);
-  const setTabbarIndex = (e) => (tabbarIndex.value = e);
+  let tabbarIndex = ref(0)
+  const getTabbarIndex = computed(() => tabbarIndex.value)
+  const setTabbarIndex = (e) => (tabbarIndex.value = e)
 
   return {
     tabbarIndex,
     getTabbarIndex,
-    setTabbarIndex,
-  };
-});
+    setTabbarIndex
+  }
+})
 
-export { useSetupStore };
+export { useSetupStore }

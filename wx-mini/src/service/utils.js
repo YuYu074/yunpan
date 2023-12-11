@@ -21,9 +21,4 @@ const jump = function (url, isReLaunch = false) {
 
 export default {
   jump
-  
-}
-
-export {
-  jump
 }

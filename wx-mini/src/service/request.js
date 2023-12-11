@@ -107,12 +107,11 @@ async function request ({
 
   return new Promise((resolve, reject) => {
     wx.request({
-      url: url,
-      method: method,
-      header: header,
-      // dataType: dataType,
-      responseType: responseType,
-      data: data,
+      url,
+      method,
+      header,
+      responseType,
+      data,
       success (res) {
         if (res.statusCode === 200) {
           success && success(res)

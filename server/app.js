@@ -19,7 +19,9 @@ server.listen(3000, () => {
 server.use(Multer({ dest: "./allFiles" }).any());
 server.use("/login", loginRouter);
 
-//下载计数
+const Pool = 
+
+//测试
 loginRouter.use("/test", (req, res) => {
   console.log(req.body);
   var Pool = mysql.createPool({

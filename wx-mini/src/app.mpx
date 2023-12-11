@@ -38,15 +38,31 @@ createApp({
 <script type="application/json">
   {
     "pages": [
-      "./pages/login/login",
-      "./pages/index",
       "./pages/tabbar/tabbar1",
       "./pages/tabbar/tabbar2",
-      "./pages/tabbar/tabbar3"
+      "./pages/tabbar/tabbar3",
+      "./pages/tabbar/tabbar4",
+      "./pages/login/login"
+    ],
+    "subpackages": [
+      {
+        "root": "package",
+        "pages": [
+          "./pages/file/list",
+          "./pages/vip/index"
+        ]
+      },
+      {
+        "root": "packageUser",
+        "pages": [
+          "./pages/user/index",
+          "./pages/info/info"
+        ]
+      }
     ],
     "window": {
-      "navigationBarBackgroundColor": "#ffffff",
-      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#1A85FF",
+      "navigationBarTextStyle": "white",
       "navigationBarTitleText": "小鱼网盘",
       "enablePullDownRefresh": false
     },
@@ -66,6 +82,9 @@ createApp({
         },
         {
           "pagePath": "pages/tabbar/tabbar3"
+        },
+        {
+          "pagePath": "pages/tabbar/tabbar4"
         }
       ]
     },

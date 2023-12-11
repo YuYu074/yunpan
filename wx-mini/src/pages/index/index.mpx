@@ -1,0 +1,144 @@
+<template>
+  <van-dialog id="van-dialog" />
+
+  <view class="home">
+    <!-- 轮播图 -->
+    <view class="swiper-wrap">
+      <swiper
+        wx:if="{{ banner.length > 0 }}"
+        class="swiper"
+        indicator-dots="true"
+        indicator-color="rgba(255, 255, 255, 0.39)"
+        indicator-active-color="#fff"
+        autoplay="true"
+        interval="5000"
+        duration="300"
+        circular
+      >
+        <block wx:for="{{ banner }}" wx:key="index">
+          <swiper-item class="swiper__item">
+            <view class="swiper__img" bindtap="toWebview(item.url)">
+              <image
+                style="width: 100%; height: 100%; background-color: #eeeeee;"
+                mode="aspectFit"
+                src="{{item.src}}"
+              ></image>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+
+    <!-- 常用应用 -->
+    <view class="row">
+      <view class="row-add">
+        <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="jump(item.link)">
+          <van-icon name="{{item.icon}}" color="{{item.color}}" size="50px"/>
+          <view class="row-add-title">{{ item.title }}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import mpx, { createComponent, ref, onMounted, reactive } from '@mpxjs/core'
+  import { api, request } from '@/service'
+  import { useSetupStore } from '@/store'
+  import dayjs from 'dayjs'
+  import Dialog from '@vant/weapp/dialog/dialog'
+  
+  createComponent({
+    setup() {
+			//轮播图
+			const banner = ref([])
+			const getBanner = () => {
+				banner.value = [
+					{
+						src: 'https://res.wx.qq.com/wxdoc/dist/assets/img/0.4cb08bb4.jpg',
+						url: ''
+					}
+				]
+			}
+
+			//常用功能
+      let addList = [
+        { title: '视 频', icon: 'video', color: '#1296db', link: '/packageRMS/pages/sacn_sign/dist' },
+        { title: '图 片', icon: 'photo', color: '#1296db', link: '/packageRMS/pages/place_order/index' },
+        { title: '文 档', icon: 'description', color: '#1296db', link: '/packageRMS/pages/order/list' },
+        { title: '音 乐', icon: 'live', color: '#1296db', link: '/packageRMS/pages/protocol_manage/index' }
+      ]
+
+			onMounted(() => {
+				getBanner()
+				console.log(banner.value);
+			})
+
+			return {
+				banner,
+				addList
+			}
+		}
+  })
+</script>
+<style lang="stylus">
+  @import '~@/style/common.styl'
+  @import '~@/style/rank.styl'
+</style>
+<style lang="stylus" scoped>
+  .page 
+    display block
+    background-color white
+    position relative
+    color #333333
+
+  .swiper-wrap
+    padding 12px 12px 0 12px
+    background-color #fff
+    .swiper
+      overflow hidden
+      width 100%
+      background #f5f5f5
+      height 168px
+      border-radius 6px
+    .swiper__item
+      width 100%
+      height 100%
+      background #f5f5f5
+      border-radius 6px
+    .swiper__img
+      width 100%
+      height 100%
+      border-radius 6px
+  .row
+    margin 0 16px
+    .row-add
+      padding 10px 15px
+      display flex
+      justify-content space-between
+      align-content center
+      color #323232
+      font-size 12px
+      .row-addCol
+        display flex
+        flex-direction column
+        justify-content center
+        align-content center
+        .row-add-title
+          margin-top 6px
+					text-align center
+</style>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {
+      "van-notice-bar": "@vant/weapp/notice-bar/index",
+      "van-progress": "@vant/weapp/progress/index",
+      "van-button": "@vant/weapp/button/index",
+      "van-icon": "@vant/weapp/icon/index",
+      "van-image": "@vant/weapp/image/index",
+      "van-dialog": "@vant/weapp/dialog/index"
+    }
+  }
+</script>
+

@@ -1,0 +1,104 @@
+// 此文件存放通用样式变量
+
+// 主题颜色
+theme = rgba(57, 117, 198, 1)
+theme-light =#479DFF
+theme-dark = #0053F9
+theme-lightest = #E7F1FF
+
+// 背景颜色
+bg-grey = #F5f5f5 // 灰色背景
+
+// 文字颜色
+text = #303133 // 主要文字
+text-dark = #222222 // 文字加深
+text-darkest = #000000 // 文字最深
+text-regular =#909399 // 常规文字
+text-light = #999999 // 提示颜色 可以用于浅颜色的提示语的场景
+text-lighter = #C0C4CC // 比提示颜色更浅的颜色
+text-lightest = #FFFFFF // 最浅的颜色
+text-important = #FF0000 // 重要文字颜色 比如用于显示价格
+text-transparent = transparent // 透明
+
+// 字体
+font-base = 10px
+font-xs = font-base
+font-s = font-base * 1.2
+font-m = font-base * 1.4
+font-l = font-base * 1.6
+font-xl = font-base * 1.8
+font-xxl = font-base * 2
+font-xxxl = font-base * 2.2
+
+// 内外边距(margin padding) distance 缩写 dis
+dis-base = 4px
+dis-xs = dis-base
+dis-s = dis-base * 2
+dis-m = dis-base * 3
+dis-l = dis-base * 4
+dis-xl = dis-base * 5
+dis-xxl = dis-base * 6
+dis-xxxl = dis-base * 7
+
+// 边距
+padding-base = 4px
+padding-xs = padding-base
+padding-sm = padding-base * 2
+padding-md = padding-base * 3
+padding-lg = padding-base * 4
+padding-xl = padding-base * 5
+
+margin-base = 4px
+margin-xs = margin-base
+margin-sm = margin-base * 2
+margin-md = margin-base * 3
+margin-lg = margin-base * 4
+margin-xl = margin-base * 5
+
+// 边框颜色
+border = #eeeeee
+border-dark = #DCDFE6
+border-light = #EBEEF5
+border-lighter = #F2F6FC
+
+// 圆角
+radius-base = 2px
+radius-xs = radius-base
+radius-s = radius-base * 2
+radius-sm = radius-base * 2.5
+radius-m = radius-base * 3
+radius-l = radius-base * 4
+radius-xl = radius-base * 5
+radius-xxl = radius-base * 6
+
+
+btn()
+  background-color theme
+  font-size 16px
+  color white
+  text-align center
+  border-radius radius-sm
+  height 45px
+  line-height 45px
+  box-sizing border-box
+
+btn-plain()
+  btn()
+  background-color white
+  color theme
+  border 1px solid theme
+
+border1px(upDown = true)
+  position relative
+  &:after
+    content ""
+    position absolute
+    left 0px
+    right 0px
+    border-bottom 1px solid border
+    -webkit-transform scaleY(.5)
+    -webkit-transform-origin 0 0
+    if upDown
+      bottom 0px
+    else
+      top 0px

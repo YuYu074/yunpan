@@ -1,0 +1,100 @@
+<template>
+  <cover-view class="tab-bar">
+    <cover-view class="tab-bar-border"></cover-view>
+    <cover-view
+      wx:for="{{ list }}"
+      wx:key="index"
+      class="tab-bar-item"
+      data-path="{{ item.pagePath }}"
+      data-index="{{ index }}"
+      bindtap="switchTab"
+    >
+      <cover-image
+        class="tab-bar-item-img"
+        src="{{ tabbarIndex === index ? item.selectedIconPath : item.iconPath }}"
+      ></cover-image>
+      <cover-view class="tab-bar-item-txt" style="color: {{ tabbarIndex === index ? selectedColor : color }}">{{
+        item.text
+      }}</cover-view>
+    </cover-view>
+  </cover-view>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  import { utils, tabbar } from '@/service'
+  import { useSetupStore } from '@/store'
+  const store = useSetupStore()
+  createComponent({
+    data () {
+      return {
+        color: '#7A7E83',
+        selectedColor: '#1A85FF',
+        list: []
+      }
+    },
+    computed: {
+      tabbarIndex () {
+        console.log(store);
+        return store.$state.tabbarIndex
+      }
+    },
+    lifetimes: {
+      ready: function () {
+        // console.log('ready')
+        this.list = wx.getStorageSync('tabbarData').list
+      },
+      attached: function () {
+        // console.log('attached')
+        this.list = wx.getStorageSync('tabbarData').list
+      }
+    },
+    methods: {
+      switchTab (e) {
+        // console.log(e)
+        tabbar.jump(e.currentTarget.dataset.path)
+      }
+    }
+  })
+</script>
+
+<style lang="stylus" scoped>
+  // @import '~@/asset/style/common.styl'
+
+  .tab-bar
+    position fixed
+    bottom 0
+    left 0
+    right 0
+    height 48px
+    background white
+    display flex
+    padding-bottom env(safe-area-inset-bottom)
+  .tab-bar-border
+    background-color rgba(0, 0, 0, 0.33)
+    position absolute
+    left 0
+    top 0
+    width 100%
+    height 1px
+    transform scaleY(0.5)
+  .tab-bar-item
+    flex 1
+    text-align center
+    display flex
+    justify-content center
+    align-items center
+    flex-direction column
+  .tab-bar-item-img
+    width 27px
+    height 27px
+  .tab-bar-item-txt
+    font-size 10px
+</style>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {}
+  }
+</script>

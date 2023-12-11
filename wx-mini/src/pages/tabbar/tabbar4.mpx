@@ -5,24 +5,24 @@
 
 
 <script>
-  import { createPage, onPullDownRefresh, onShow } from '@mpxjs/core'
+  import { createPage } from '@mpxjs/core'
   import Dialog from '@vant/weapp/dialog/dialog'
 
   createPage({
-    setup(prop, { refs }) {
-      onShow(() => {
-        console.log(refs.indexRef)
-        // refs.indexRef.loadMore()
-      })
-      // onPullDownRefresh(() => {
-        // if (refs.indexRef && refs.indexRef.getIncome) {
-          // refs.indexRef.loadMore()
-        // } else {
-          // wx.stopPullDownRefresh()
-        // }
-      // })
+    data () {
       return {}
-    }
+    },
+    onShow() {
+      console.log(this.$refs.indexRef)
+      this.$refs.indexRef.loadMore()
+    },
+    onPullDownRefresh () {
+      if (this.$refs.indexRef && this.$refs.indexRef.getIncome) {
+        this.$refs.indexRef.loadMore()
+      } else {
+        wx.stopPullDownRefresh()
+      }
+    },
   })
 </script>
 
@@ -35,12 +35,12 @@
 
 <script type="application/json">
   {
-    "navigationBarTitleText": "首页",
+    "navigationBarTitleText": "我的",
     "navigationBarBackgroundColor": "#3975C6",
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": true,
     "usingComponents": {
-      "index": "@/pages/index/index",
+      "index": "@/packageUser/pages/user/index",
       "van-dialog": "@vant/weapp/dialog/index"
     }
   }

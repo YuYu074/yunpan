@@ -1,0 +1,47 @@
+<template>
+  <van-dialog id="van-dialog" />
+  <index wx:ref="indexRef"></index>
+</template>
+
+
+<script>
+  import { createPage } from '@mpxjs/core'
+  import Dialog from '@vant/weapp/dialog/dialog'
+
+  createPage({
+    data () {
+      return {}
+    },
+    onShow() {
+      console.log(this.$refs.indexRef)
+      this.$refs.indexRef.loadMore()
+    },
+    onPullDownRefresh () {
+      if (this.$refs.indexRef && this.$refs.indexRef.getIncome) {
+        this.$refs.indexRef.loadMore()
+      } else {
+        wx.stopPullDownRefresh()
+      }
+    },
+  })
+</script>
+
+<style lang="stylus" scoped>
+  @import '~@/style/common.styl'
+  page
+    padding-bottom calc(48px + env(safe-area-inset-bottom))
+
+</style>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "文件",
+    "navigationBarBackgroundColor": "#3975C6",
+    "navigationBarTextStyle": "white",
+    "enablePullDownRefresh": true,
+    "usingComponents": {
+      "index": "@/package/pages/file/list",
+      "van-dialog": "@vant/weapp/dialog/index"
+    }
+  }
+</script>
