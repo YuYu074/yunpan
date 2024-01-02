@@ -27,7 +27,7 @@ createApp({
   page {
     font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial,
       Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
-    color: text;
+    background-color: #f4f6f8;
     --sidebar-selected-border-color: theme;
   }
   .van-notice-bar__content {
@@ -64,7 +64,8 @@ createApp({
       "navigationBarBackgroundColor": "#1A85FF",
       "navigationBarTextStyle": "white",
       "navigationBarTitleText": "小鱼网盘",
-      "enablePullDownRefresh": false
+      "enablePullDownRefresh": false,
+      "backgroundColor": "#F4F6F8"
     },
     "tabBar": {
       "custom": true,

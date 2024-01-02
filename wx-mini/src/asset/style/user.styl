@@ -1,0 +1,126 @@
+@import '~@/asset/style/common.styl'
+page
+  background-color bg-grey
+
+.user-avt
+  box-sizing border-box
+  width 100%
+  overflow hidden
+  // background-image url(../../asset/img/user/my_bg@2x.png)
+  background-size 100% 50%
+  background-position top center
+  background-repeat no-repeat
+.user-avt__bd
+  background-color #fff
+  box-sizing border-box
+  padding 100rpx dis-l dis-l dis-l
+  // margin 0 dis-m
+  // border-radius radius-xl
+  // background-image url(../../asset/img/user/card_bg@2x.png)
+  background-size 100% 100%
+  background-position center center
+  background-repeat no-repeat
+.user-avar__content
+  display flex
+  align-items center
+.user-avt__bd-img
+  flex none
+  width 60px
+  height 60px
+  margin-right dis-m
+  border-radius 50%
+  background #1A85FF
+  overflow hidden
+  text-align center
+  border 3px solid #E7F1FF
+  color #fff
+.user-avt__bd-img-icon
+  width 60px
+  height 60px
+.user-avt__bd-con
+  flex 1
+  overflow hidden
+.user-avt__bd-name
+  line-height 1.5
+  font-size font-l
+  font-weight bold
+  color #C9A26D
+.user-avt__bd-des
+  line-height 1.5
+  font-size font-s
+  color #ffffff
+
+
+
+.btn-wrap
+    box-sizing border-box
+    position fixed
+    left 0
+    right 0
+    bottom calc(16px + 48px + env(safe-area-inset-bottom))
+    width: 100%
+    padding 0 16px
+  .btn
+    btn()
+
+
+.user-mod
+  background-color white
+  border-radius radius-xl
+  margin dis-m
+.user-mod-th
+  border-bottom 1px solid #F5F5F5
+  height 50px
+  line-height 50px
+  padding 0 dis-m
+.user-mod-th-tit
+  float left
+  font-weight bold
+  font-size font-l
+.user-mod-th-des
+  float right
+  font-size font-s
+  color text-light
+.user-mod-tb
+  padding dis-m
+.function-text
+  margin-left 8px
+
+
+
+.user-grid
+  overflow hidden
+.user-grid-item
+  width 25%
+  float left
+  position relative
+  text-align center
+.user-grid-item button
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+  opacity 0
+.user-grid-item image
+  width 32px
+  height 32px
+  overflow hidden
+  display block
+  margin 0px auto
+.user-grid-item text
+  display block
+  font-size font-s
+  line-height 1.5
+  margin-bottom 4px
+  color text-regular
+.user-grid-item-count
+  font-size font-s
+  line-height 15px
+  padding 0 5px
+  background-color red
+  color white
+  border-radius radius-l
+  position absolute
+  left 60%
+  top 0px

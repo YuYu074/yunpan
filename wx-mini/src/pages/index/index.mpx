@@ -2,6 +2,18 @@
   <van-dialog id="van-dialog" />
 
   <view class="home">
+    <!-- 搜索 -->
+    <view>
+      <van-search
+        value="{{ searchKey }}"
+        input-align="center"
+        placeholder="搜索网盘文件"
+        bind:search="onSearch"
+        bind:change="onSearchChange"
+        clearable
+      />
+    </view>
+
     <!-- 轮播图 -->
     <view class="swiper-wrap">
       <swiper
@@ -38,17 +50,61 @@
         </view>
       </view>
     </view>
+
+    <!-- 可用空间 -->
+    <view class="row">
+      <view class="item">
+        <view>当前已用：{{11}}GB</view>
+        <view>总容量：{{22}}GB</view>
+      </view>
+      <view class="progress">
+        <van-progress percentage="50"/>
+      </view>
+      <view class="item btn">
+        开通会员扩容>>
+      </view>
+    </view>
+    
+    <!-- 最近文件 -->
+    <view class="row">
+      <view class="title">
+        最近文件
+      </view>
+      <view class="content">
+        <view class="left">
+          <van-image width="30" height="30" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+        </view>
+        <view class="right">
+          <view class="name">test.png</view>
+          <view class="info">
+            2023-12-13 13:41 345KB
+          </view>
+        </view>
+      </view>
+      <view class="tip">
+        查看更多文件>>
+      </view>
+    </view>
   </view>
 </template>
 <script>
   import mpx, { createComponent, ref, onMounted, reactive } from '@mpxjs/core'
-  import { api, request } from '@/service'
+  import { api, request, tabbar } from '@/service'
   import { useSetupStore } from '@/store'
   import dayjs from 'dayjs'
   import Dialog from '@vant/weapp/dialog/dialog'
   
   createComponent({
     setup() {
+      //搜索
+      const searchKey = ref('')
+      const onSearch = () => {
+        //发起搜索请求
+      }
+      const onSearchChange = (e) => {
+        searchKey.value = e.detail
+      }
+
 			//轮播图
 			const banner = ref([])
 			const getBanner = () => {
@@ -63,17 +119,21 @@
 			//常用功能
       let addList = [
         { title: '视 频', icon: 'video', color: '#1296db', link: '/packageRMS/pages/sacn_sign/dist' },
-        { title: '图 片', icon: 'photo', color: '#1296db', link: '/packageRMS/pages/place_order/index' },
-        { title: '文 档', icon: 'description', color: '#1296db', link: '/packageRMS/pages/order/list' },
-        { title: '音 乐', icon: 'live', color: '#1296db', link: '/packageRMS/pages/protocol_manage/index' }
+        { title: '图 片', icon: 'photo', color: '#70C1B3', link: '/packageRMS/pages/place_order/index' },
+        { title: '文 档', icon: 'description', color: '#f3c71b', link: '/packageRMS/pages/order/list' },
+        { title: '音 乐', icon: 'live', color: '#ed71fe', link: '/packageRMS/pages/protocol_manage/index' }
       ]
 
 			onMounted(() => {
+        tabbar.init()
 				getBanner()
 				console.log(banner.value);
 			})
 
 			return {
+        searchKey,
+        onSearch,
+        onSearchChange,
 				banner,
 				addList
 			}
@@ -92,7 +152,7 @@
     color #333333
 
   .swiper-wrap
-    padding 12px 12px 0 12px
+    margin 12px
     background-color #fff
     .swiper
       overflow hidden
@@ -110,7 +170,9 @@
       height 100%
       border-radius 6px
   .row
-    margin 0 16px
+    margin 12px
+    border-radius 6px
+    background-color #fff
     .row-add
       padding 10px 15px
       display flex
@@ -126,18 +188,75 @@
         .row-add-title
           margin-top 6px
 					text-align center
+    .item
+      padding 12px
+      font-weight 600
+      font-size 1.2rem
+      display flex
+      justify-content space-around
+      align-items center
+    .progress
+      height 20px
+      padding 12px
+    .btn
+      background-color #1296db
+      font-weight 400
+      font-size 13px
+      color #fff
+      border-radius 5px
+      text-align center
+    .title
+      padding 12px 20px
+      font-weight 600
+      font-size 1.2rem
+      text-align left
+      position relative
+      &:before
+        position absolute
+        content ''
+        width 0
+        height 10px
+        border 2px solid #1296db
+        bottom 50%
+        left 8px
+        transform translateY(50%)
+    .content
+      margin 12px
+      padding 12px
+      border 1px solid #000
+      border-radius 8px
+      display flex
+      .left
+        display flex
+        justify-content center
+        align-items center
+        max-width 40px
+      .right
+        margin-left 12px
+        display flex
+        flex-direction column
+        justify-content space-around
+        text-align left
+        .info
+          color #aaaaaa
+          font-size 10px
+    .tip
+      padding 12px
+      padding-top 0
+      margin 0 auto
+      text-decoration underline
+      color #1296db
 </style>
 
 <script type="application/json">
   {
     "component": true,
     "usingComponents": {
-      "van-notice-bar": "@vant/weapp/notice-bar/index",
-      "van-progress": "@vant/weapp/progress/index",
-      "van-button": "@vant/weapp/button/index",
       "van-icon": "@vant/weapp/icon/index",
       "van-image": "@vant/weapp/image/index",
-      "van-dialog": "@vant/weapp/dialog/index"
+      "van-dialog": "@vant/weapp/dialog/index",
+      "van-search": "@vant/weapp/search/index",
+      "van-progress": "@vant/weapp/progress/index"
     }
   }
 </script>

@@ -14,7 +14,7 @@
     },
     onShow() {
       console.log(this.$refs.indexRef)
-      this.$refs.indexRef.loadMore()
+      // this.$refs.indexRef.loadMore()
     },
     onPullDownRefresh () {
       if (this.$refs.indexRef && this.$refs.indexRef.getIncome) {

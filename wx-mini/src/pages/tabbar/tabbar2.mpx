@@ -14,7 +14,7 @@
     },
     onShow() {
       console.log(this.$refs.indexRef)
-      this.$refs.indexRef.loadMore()
+      // this.$refs.indexRef.loadMore()
     },
     onPullDownRefresh () {
       if (this.$refs.indexRef && this.$refs.indexRef.getIncome) {
@@ -38,7 +38,6 @@
     "navigationBarTitleText": "文件",
     "navigationBarBackgroundColor": "#3975C6",
     "navigationBarTextStyle": "white",
-    "enablePullDownRefresh": true,
     "usingComponents": {
       "index": "@/package/pages/file/list",
       "van-dialog": "@vant/weapp/dialog/index"

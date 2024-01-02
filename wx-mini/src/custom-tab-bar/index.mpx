@@ -59,7 +59,6 @@
 </script>
 
 <style lang="stylus" scoped>
-  // @import '~@/asset/style/common.styl'
 
   .tab-bar
     position fixed
