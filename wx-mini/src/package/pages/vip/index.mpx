@@ -1,17 +1,189 @@
 <template>
-  
+  <view class="user-avt content" style="width: auto">
+    <view class="user-avt__bd" style="padding-top: 32rpx;">
+      <view class="user-avar__content">
+        <view class="user-avt__bd-img" bindtap="jump('/packageRMS/pages/user/userinfo')">
+          <van-icon wx:if="{{ !isHasAvt }}" class="user-avt__bd-img-icon" name="manager" size="30px" />
+        </view>
+        <view class="user-avt__bd-con">
+          <view class="user-avt__bd-name" wx:if="{{user}}">
+            {{ user.userinfoname }} -- 黄金会员
+          </view>
+          <view wx:else>请登录</view>
+          <view class="user-avt__bd-des">当前权益：白金会员</view>
+          <view class="user-avt__bd-des">2024-12-31到期</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="content">
+    <van-tabs active="{{ tabActive }}" bind:change="onTabChange">
+      <van-tab title="黄金会员"></van-tab>
+      <van-tab title="白金会员"></van-tab>
+      <van-tab title="黑金会员"></van-tab>
+    </van-tabs>
+    <scroll-view scroll-x style="width: 100%;white-space: nowrap">
+      <view class="vip-price-wrap">
+        <view class="vip-price-item">
+          <view class="time">
+            1个月
+          </view>
+          <view class="price">
+            ￥15
+          </view>
+        </view>
+      </view>
+      <view class="vip-price-wrap">
+        <view class="vip-price-item">
+          <view class="time">
+            1个月
+          </view>
+          <view class="price">
+            ￥15
+          </view>
+        </view>
+      </view>
+      <view class="vip-price-wrap">
+        <view class="vip-price-item">
+          <view class="time">
+            1个月
+          </view>
+          <view class="price">
+            ￥15
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <view>
+      <view style="padding:24rpx;">支付方式</view>
+      <van-radio-group value="{{ paywayRadio }}" bind:change="onPaywayChange">
+        <van-cell-group>
+          <van-cell title="微信支付" clickable data-name="1" bind:click="onPaywayClick">
+            <van-radio slot="right-icon" name="1" />
+          </van-cell>
+          <van-cell title="支付宝" clickable data-name="2" bind:click="onPaywayClick">
+            <van-radio slot="right-icon" name="2" />
+          </van-cell>
+          <van-cell title="数字人民币" clickable data-name="3" bind:click="onPaywayClick">
+            <van-radio slot="right-icon" name="3" />
+          </van-cell>
+        </van-cell-group>
+      </van-radio-group>
+    </view>
+  </view>
+  <view class="table">
+    <table wx:ref="tableRef" viewRule="{{tableViewRule}}" />
+  </view>
+
+  <view class="bottom">
+    <view class="btn">
+      确认协议并支付
+    </view>
+  </view>
 </template>
 
 <script>
+import mpx, { ref, createComponent } from '@mpxjs/core'
+  import { utils, request, api } from '@/service'
+  import get from 'lodash-es/get'
 
+  createComponent({
+    setup() {
+      const tabActive = ref(0)
+      const onTabChange = (e) => {
+        console.log(e);
+        tabActive.value = e.detail.index
+      }
+
+      const paywayRadio = ref('1')
+      const onPaywayChange = e => {
+        paywayRadio.value = e.detail
+      }
+      const onPaywayClick = e => {
+        paywayRadio.value = e.currentTarget.dataset.name
+      }
+
+      const tableViewRule = {
+        type: 'table2',
+        height: '',
+        checkable: '',
+        showTotal: false,
+        columns: [
+          { type: 'text', title: '权益项目', name: 'accountname', color: '#333333', bgc: '#F4F6F8' },
+          { type: 'text', title: '普通会员', name: 'billtype', color: '#333333', bgc: '#3AB1EF', width: '75' },
+          { type: 'text', title: '黄金会员', name: 'billdate', color: '#555555', bgc: '#FFD700', width: '75' },
+          { type: 'text', title: '白金会员', name: 'billcode', color: '#333333', bgc: '#EEE8AA',width: '75' },
+          { type: 'text', title: '黑金会员', name: 'bussinesscontent', color: '#B8860B', bgc: '#222222', width: '75' },
+        ]
+      }
+
+      return {
+        tabActive,
+        onTabChange,
+        paywayRadio,
+        onPaywayChange,
+        onPaywayClick,
+        tableViewRule
+      }
+    }
+  })
 </script>
 
 <style lang="stylus">
+  @import '~@/asset/style/user.styl'
+  .content
+    margin 24rpx
+    background-color #fff
+    border-radius 12rpx
+  .vip-price-wrap
+    display inline-block
+    .vip-price-item
+      margin 24rpx
+      padding 36rpx
+      min-width 200rpx
+      border 1px solid #aaa
+      background-color #ddd
+      display flex
+      flex-direction column
+      justify-content space-evenly
+      align-items center
+      .price
+        font-size 20px
+        font-weight 700
+        color #1296db
+  .table
+    margin 36rpx 24rpx 120rpx 24rpx
+    background-color #fff
+    border-radius 12rpx
+  .bottom
+    position fixed
+    bottom 0
+    margin 0 auto
+    padding 32rpx 32rpx 180rpx 32rpx
+    width 686rpx
+    .btn
+      padding 0 16rpx
+      height 70rpx
+      line-height 70rpx
+      border-radius 35rpx
+      background-color #1296db
+      color #fff
 
 </style>
 
 <script type="application/json">
   {
-    "usingComponents": {}
+    "component": true,
+    "usingComponents": {
+      "van-cell": "@vant/weapp/cell/index",
+      "van-cell-group": "@vant/weapp/cell-group/index",
+      "van-icon": "@vant/weapp/icon/index",
+      "van-tab": "@vant/weapp/tab/index",
+      "van-tabs": "@vant/weapp/tabs/index",
+      "van-radio": "@vant/weapp/radio/index",
+      "van-radio-group": "@vant/weapp/radio-group/index",
+      "table": "@/components/table"
+    }
   }
 </script>

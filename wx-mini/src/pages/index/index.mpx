@@ -60,7 +60,7 @@
       <view class="progress">
         <van-progress percentage="50"/>
       </view>
-      <view class="item btn">
+      <view class="item btn" bindtap="jumpBar('/pages/tabbar/tabbar3')">
         开通会员扩容>>
       </view>
     </view>
@@ -81,7 +81,7 @@
           </view>
         </view>
       </view>
-      <view class="tip">
+      <view class="tip" bindtap="jumpBar('/pages/tabbar/tabbar2')">
         查看更多文件>>
       </view>
     </view>
@@ -89,7 +89,7 @@
 </template>
 <script>
   import mpx, { createComponent, ref, onMounted, reactive } from '@mpxjs/core'
-  import { api, request, tabbar } from '@/service'
+  import { tabbar, utils, api, request } from '@/service'
   import { useSetupStore } from '@/store'
   import dayjs from 'dayjs'
   import Dialog from '@vant/weapp/dialog/dialog'
@@ -124,6 +124,14 @@
         { title: '音 乐', icon: 'live', color: '#ed71fe', link: '/packageRMS/pages/protocol_manage/index' }
       ]
 
+      const jump = (url, isReLaunch = false) => {
+          utils.jump(url, isReLaunch)
+      }
+      const jumpBar = url => {
+        console.log(url);
+        tabbar.jump(url)
+      }
+
 			onMounted(() => {
         tabbar.init()
 				getBanner()
@@ -135,7 +143,9 @@
         onSearch,
         onSearchChange,
 				banner,
-				addList
+				addList,
+        jump,
+        jumpBar
 			}
 		}
   })

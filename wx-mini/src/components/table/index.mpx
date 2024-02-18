@@ -1,0 +1,343 @@
+<template>
+  <wxs module="foo">
+    var total = function (name, list) {
+      var count = 0
+      for(var i=0; i < list.length; i++){
+        count = count + (list[i][name]*1)
+      }
+      return count
+    }
+    module.exports = {
+      total: total
+    }
+  </wxs>
+  <scroll-view scroll-x class="xt-table-wrap" id="{{ tableId }}" wx:style="{{ {height: height} }}">
+    <view class="xt-table" wx:style="{{ {width: tableWidth +'px', height: height} }}">
+      <view class="xt-table-t">
+        <view class="xt-table-t-item" wx:if="{{ viewRule.checkable === '1' }}" style="width: 50px;flex: none;">
+          <van-checkbox shape="square" value="{{ allChecked }}" bind:change="handleCheckboxAllChange($event)"></van-checkbox>
+        </view>
+        <view
+          class="xt-table-t-item"
+          wx:for="{{ viewRule.columns }}"
+          wx:key="index"
+          wx:style="{{ {width: (item.width || '100') +'px', backgroundColor: item.bgc || '#ffffff', color: item.color || '#333333'} }}"
+        >
+          <text class="xt-table-t-item-required" wx:if="{{ item.required === '1' }}">*</text>
+          {{ item.title }}
+        </view>
+        <view class="xt-table-t-item" wx:if="{{ viewRule.rowoperations && viewRule.rowoperations.length }}" style="width: 100px;">操作</view>
+      </view>
+      <view class="xt-table-c" wx:if="{{ value && value.length }}">
+        <view class="xt-table-line" wx:for="{{ value }}" wx:for-item="item" wx:for-index="index" wx:key="item">
+          <view class="xt-table-item xt-table-item-check" wx:if="{{ viewRule.checkable === '1' }}" style="width: 50px;flex: none;">
+            <van-checkbox shape="square" value="{{ item.__$$checked }}" bind:change="handleCheckboxChange($event, index)"></van-checkbox>
+          </view>
+          <view class="xt-table-item" wx:for="{{ viewRule.columns }}" wx:for-item="column" wx:for-index="columnindex" wx:key="columnindex" wx:style="{{ {width: (column.width || '100') +'px'} }}" bindtap="handleCellTap(index, columnindex, column)">
+            <view wx:if="{{ column.type === 'text' || (valueMap[index][column.name] && valueMap[index][column.name].readonly) }}" style="{{ valueMap[index][column.name].styleText }}">
+              {{ item[column.name] }}
+            </view>
+            <view wx:elif="{{ column.type === 'textinput' }}">
+              <input class="xt-table-item-input" placeholder="{{ column.placeholder || '' }}" bindinput="handleInput($event, index, column.name)" value="{{ item[column.name] }}" />
+            </view>
+            <view wx:elif="{{ column.type === 'number' }}">
+              <input class="xt-table-item-input" placeholder="{{ column.placeholder || '' }}" bindinput="handleInput($event, index, column.name)" value="{{ item[column.name] }}" type="number" />
+            </view>
+            <view wx:elif="{{ column.type === 'digit' }}">
+              <input class="xt-table-item-input" placeholder="{{ column.placeholder || '' }}" bindinput="handleInput($event, index, column.name)" value="{{ item[column.name] }}" type="digit" />
+            </view>
+          </view>
+          <view class="xt-table-item xt-table-item-operation" wx:if="{{ viewRule.rowoperations && viewRule.rowoperations.length }}" style="width: 100px;">
+            <view wx:for="{{ viewRule.rowoperations }}" wx:for-item="operation" wx:for-index="index3" wx:key="index3" bindtap="handleOperationTap(index, operation)">
+              {{ operation.value }}
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="xt-table-c" style="margin:0;" wx:if="{{ viewRule.showTotal }}">
+        <view class="xt-table-line">
+          <view class="xt-table-item" wx:for="{{ viewRule.columns }}" wx:for-item="column" wx:for-index="columnindex" wx:key="columnindex" wx:style="{{ {width: (column.width || '100') +'px'} }}">
+            <view wx:if="{{ columnindex == '0' }}">合计</view>
+            <view wx:if="{{ columnindex != '0' && column.total }}">{{ foo.total(column.name, value) }}</view>
+          </view>
+        </view>
+      </view>
+      <view class="xt-table-none" wx:if="{{ value.length == '0' }}">
+        <none tip="暂无数据"></none>
+      </view>
+    </view>
+  </scroll-view>
+</template>
+
+<script>
+  import { createComponent } from '@mpxjs/core'
+  import { utils } from '@/service'
+  import get from 'lodash-es/get'
+  import cloneDeep from 'lodash-es/cloneDeep'
+  import { sumBy } from 'lodash-es'
+  import xtBaseMixin from '../common/xt-base-mixin'
+
+  createComponent({
+    mixins: [xtBaseMixin],
+    data () {
+      return {
+        tableId: `xt-table2-id-${new Date().getTime()}`,
+        value: [],
+        valueMap: [],
+        height: '',
+        allChecked: false,
+        tableWrapWidth: 375
+      }
+    },
+    computed: {
+      // todo 控件宽度没按定义的来
+      tableWidth () {
+        let width = 0
+        this.viewRule.columns.forEach((item) => {
+          width += Number(item.width || 100)
+        })
+        if (this.viewRule.rowoperations && this.viewRule.rowoperations.length) {
+          width += 100
+        }
+        if (this.viewRule.checkable === '1') {
+          width += 50
+        }
+        if (this.tableWrapWidth > width) {
+          width = this.tableWrapWidth
+        }
+        return width
+      }
+    },
+    created () {
+      // console.log('xt-table created')
+      this.value = get(this.viewRule, 'value', [])
+      this.height = utils.fixLength(get(this.viewRule, 'height', ''))
+    },
+    ready () {
+      this.createSelectorQuery().select(`#${this.tableId}`).boundingClientRect().exec((res) => {
+        // console.error(res)
+        if (res && res[0] && res[0].width) {
+          this.tableWrapWidth = res[0].width
+        }
+      })
+    },
+    methods: {
+      kebabCase (word) {
+        const newWord = word
+        return newWord.replace(/[A-Z]/g, function (i) {
+          return '-' + i
+        }).toLowerCase()
+      },
+      createStyle (styleObj = {}) {
+        return Object.keys(styleObj).filter((key) => {
+          return styleObj[key] != null && styleObj[key] !== ''
+        }).map((key) => {
+          return [this.kebabCase(key), [styleObj[key]]].join(':')
+        }).join(';')
+      },
+      // test () {
+      //   console.log(this.value)
+      // },
+      handleOperationTap (index, operation) {
+        // console.log(index)
+        // console.log(operation)
+        this.triggerEvent('onrowoperationclicked', {
+          index,
+          operation
+        })
+      },
+      handleCellTap (rowindex, columnindex, column) {
+        // console.log(rowindex, columnindex, column)
+        // console.log(operation)
+        this.triggerEvent('oncellclicked', {
+          rowindex,
+          columnindex,
+          columnname: column.name,
+          column
+        })
+      },
+      handleInput (e, index, name) {
+        // console.log(e)
+        // console.log(index)
+        // console.log(name)
+        this.value[index][name] = e.detail.value
+        this.triggerEvent('onvaluechange', {
+          focusRow: this.value[index],
+          index,
+          name
+        })
+      },
+      handleCheckboxAllChange (e) {
+        // console.log(e)
+        this.allChecked = e.detail
+        this.value.forEach((item) => {
+          item.__$$checked = this.allChecked
+        })
+      },
+      handleCheckboxChange (e, index) {
+        // console.log(e, index)
+        this.value[index]['__$$checked'] = e.detail
+        let isall = this.value.every((item) => item.__$$checked)
+        if (this.allChecked !== isall) {
+          this.allChecked = isall
+        }
+      },
+      getValue (type = 'all') {
+        let allData = cloneDeep(this.value)
+        // debugger
+        if (type === 'checked') {
+          return allData.filter((item) => item.__$$checked)
+        } else {
+          return allData
+        }
+      },
+      setValue (data) {
+        // console.log(data)
+        let cloneData = cloneDeep(data)
+        let value = cloneData.map((item) => {
+          if (typeof item.__$$checked === 'undefined') {
+            item.__$$checked = false
+          }
+          this.viewRule.columns.forEach((column) => {
+            if (typeof item[column.name] === 'undefined') {
+              item[column.name] = ''
+            }
+          })
+          return item
+        })
+        // debugger
+        this.value = value
+        this.allChecked = this.value.every((item) => item.__$$checked) && this.value.length
+        const valueMap = this.value.map((item) => {
+          let obj = {}
+          for (const x in item) {
+            let column = this.viewRule.columns.find((item2) => {
+              return item2.name === x
+            })
+            let columnReadonly = (column && column.readonly) ? column.readonly : ''
+            let columnStyle = (column && column.style) ? column.style : {}
+            let styleText = this.createStyle(columnStyle)
+            obj[x] = {
+              readonly: columnReadonly === '1',
+              style: columnStyle,
+              styleText
+            }
+          }
+          return obj
+        })
+        this.valueMap = valueMap
+        console.log(this.valueMap)
+      },
+      setCellProp (type, rowindex, name, value) {
+        console.log(type, rowindex, name, value)
+        if (type === 'readonly') {
+          console.log(this.valueMap)
+          this.valueMap[rowindex][name].readonly = value
+        } else if (type === 'value') {
+          this.value[rowindex][name] = value
+        } else if (type === 'style') {
+          this.valueMap[rowindex][name].style = value
+          this.valueMap[rowindex][name].styleText = this.createStyle(value)
+        }
+      },
+      total (name) {
+        let list = this.value
+        return sumBy(list, name) || 0
+      }
+    }
+  })
+</script>
+
+<style lang="stylus">
+  @import '~@/asset/style/common.styl'
+
+  .xt-table-wrap
+    border 1px solid #eee
+    box-sizing border-box
+  .xt-table
+    font-size 12px
+    position relative
+    overflow hidden
+  .xt-table-t
+    background-color theme-lightest
+    overflow hidden
+    text-align center
+    display flex
+    position absolute
+    width 100%
+    top 0
+    left 0
+    height 40px
+    // z-index 10
+  .xt-table-t-item
+    flex 1
+    border-right 1px solid #eee
+    border-bottom 1px solid #eee
+    // border-right 1px solid #f60
+    // border-bottom 1px solid #f60
+    // padding 5px
+    line-height 20px
+    font-weight bold
+    font-size 14px
+    display flex
+    align-items center
+    justify-content center
+    word-break break-all
+    word-wrap break-word
+    box-sizing border-box
+  .xt-table-t-item-required
+    color red
+    margin-left 2px
+  .xt-table-t .xt-table-t-item:last-child
+    border-right none
+  .xt-table-c
+    margin-top 40px
+    height calc(100% - 40px)
+    overflow-y scroll
+  .xt-table-line
+    overflow hidden
+    display flex
+  .xt-table-item
+    flex 1
+    border-right 1px solid #eee
+    border-bottom 1px solid #eee
+    // border-right 1px solid #05a
+    // border-bottom 1px solid #05a
+    padding 5px
+    // line-height 20px
+    display flex
+    align-items center
+    justify-content center
+    word-break break-all
+    word-wrap break-word
+    box-sizing border-box
+  .xt-table-item-input
+    border 1px solid #C0C4CC
+    padding 0 5px
+    line-height 25px
+    height 25px
+    border-radius 3px
+    text-align center
+  .xt-table-item-operation
+    flex-direction column
+    color theme
+  // .xt-table-line:last-child .xt-table-item
+  //   border-bottom none
+  .xt-table-line .xt-table-item:last-child
+    border-right none
+  .xt-table-none
+    margin-top 40px
+    height calc(100% - 40px)
+    overflow-y scroll
+</style>
+
+<script type="application/json">
+  {
+    "component": true,
+    "usingComponents": {
+      "none": "@/components/none",
+      "van-checkbox": "@vant/weapp/checkbox/index",
+      "van-checkbox-group": "@vant/weapp/checkbox-group/index"
+    }
+  }
+</script>

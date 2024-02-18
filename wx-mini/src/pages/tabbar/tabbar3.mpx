@@ -14,7 +14,12 @@
     },
     onShow() {
       console.log(this.$refs.indexRef)
-      // this.$refs.indexRef.loadMore()
+      if (typeof this.getTabBar === 'function' &&
+        this.getTabBar()) {
+        this.getTabBar().setData({
+          selected: 2
+        })
+      }
     },
     onPullDownRefresh () {
       if (this.$refs.indexRef && this.$refs.indexRef.getIncome) {

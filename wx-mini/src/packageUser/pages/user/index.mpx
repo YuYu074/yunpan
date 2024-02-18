@@ -17,22 +17,84 @@
     </view>
   </view>
 
+  <view class="row">
+    <view class="row-add">
+      <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="jump(item.link)">
+        <van-icon name="{{item.icon}}" color="{{item.color}}" size="30px"/>
+        <view class="row-add-title">{{ item.title }}</view>
+      </view>
+    </view>
+  </view>
+
   <view class="function-wrap">
-    <van-cell-group inset>
       <van-cell
         wx:for="{{ functionalList }}"
         wx:key="index"
         bind:click="jump(item.link)"
       >
         <view slot="title" class="function-item">
-          <image src="{{ item.icon }}" style="height: 20px; width: 20px"></image>
-          <view class="function-text">{{ item.title }}{{item.title_ext}}</view>
+          <!-- <image src="{{ item.icon }}" style="height: 20px; width: 20px"></image> -->
+          <view class="function-text">{{ item.title }}</view>
         </view>
         <van-icon slot="right-icon" name="arrow" />
       </van-cell>
-    </van-cell-group>
   </view>
 </template>
+
+<script>
+  import mpx, { ref, createComponent } from '@mpxjs/core'
+  import { tabbar, utils, request, api } from '@/service'
+  import get from 'lodash-es/get'
+
+  createComponent({
+    setup() {
+      const functionalList = [
+        { title: '设置', link: '/packageRMS/pages/user/newstore' },
+        { title: '客服中心', link: '/packageRMS/pages/user/mystore' },
+        { title: '更多服务', link: '/packageRMS/pages/user/changestore' },
+        { title: '问题反馈', link: 'customerservice' },
+        { title: '退出登录', link: 'loginout' }
+      ]
+      const addList = [
+        { title: '我的收藏', icon: 'star', color: '#1296db', link: '/packageRMS/pages/sacn_sign/dist' },
+        { title: '回收站', icon: 'delete', color: '#1296db', link: '/packageRMS/pages/place_order/index' },
+        { title: '我的订单', icon: 'bill', color: '#1296db', link: '/packageRMS/pages/order/list' },
+        { title: '个人信息', icon: 'user', color: '#1296db', link: '/packageRMS/pages/protocol_manage/index' }
+      ]
+
+      const jump = (url, isReLaunch = false) => {
+        if(url == 'customerservice') {
+          wx.makePhoneCall({
+            phoneNumber: '40012341234'
+          })
+        } else {
+          utils.jump(url, isReLaunch)
+        }
+      }
+
+      const loginOut = () => {
+        wx.showModal({
+          title: '提示',
+          content: '确定退出登录？',
+          success (e) {
+            if (e.confirm) {
+              // auth.loginOut()
+              mpx.removeStorageSync('storeInfo')
+              utils.jump('/pages/login/login?noautologin=1', true)
+            }
+          }
+        })
+      }
+      
+      return {
+        functionalList,
+        addList,
+        jump,
+        loginOut
+      }
+    }
+  })
+</script>
 
 <style lang="stylus">
   @import '~@/asset/style/user.styl'
@@ -47,84 +109,26 @@
       align-items center !important
     .function-text
       margin-left 8px
+  .row
+    margin 12px
+    border-radius 6px
+    background-color #fff
+    .row-add
+      padding 10px 15px
+      display flex
+      justify-content space-between
+      align-content center
+      color #323232
+      font-size 12px
+      .row-addCol
+        display flex
+        flex-direction column
+        justify-content center
+        align-content center
+        .row-add-title
+          margin-top 6px
+					text-align center
 </style>
-<script>
-  import mpx, { createComponent } from '@mpxjs/core'
-  import { utils, request, api } from '@/service'
-  import get from 'lodash-es/get'
-
-  createComponent({
-    data () {
-      return {
-        icon_tuichu,
-        isHasAvt: false,
-        functionalList: [
-          {
-            title: '新增店员',
-            icon: icon_newshop,
-            link: '/packageRMS/pages/user/newstore'
-          },
-          {
-            title: '我的店员',
-            icon: icon_myshop,
-            link: '/packageRMS/pages/user/mystore'
-          },
-          {
-            title: '切换门店',
-            icon: icon_changeshop,
-            link: '/packageRMS/pages/user/changestore'
-          },
-          {
-            title: '联系客服',
-            title_ext: ': 400-1234-1234',
-            icon: icon_kefu,
-            link: 'customerservice'
-          }
-        ]
-      }
-    },
-    methods: {
-      pullDownRefresh () {
-        Promise.all([this.getMoney(), this.getintegralList()]).finally(() => {
-          wx.stopPullDownRefresh()
-        })
-      },
-      hidemoney () {
-        this.hide = !this.hide
-      },
-      loginOut () {
-        wx.showModal({
-          title: '提示',
-          content: '确定退出登录？',
-          success (e) {
-            if (e.confirm) {
-              // auth.loginOut()
-              mpx.removeStorageSync('storeInfo')
-              utils.jump('/pages/login/login?noautologin=1', true)
-            }
-          }
-        })
-      },
-      jump (url, isReLaunch = false) {
-        if(url == 'customerservice') {
-          wx.makePhoneCall({
-            phoneNumber: '40012341234'
-          })
-        } else {
-          utils.jump(url, isReLaunch)
-        }
-      },
-      // 四舍五入保留2位小数
-      deal2round (arg, n = 2) {
-        // debugger
-        let num = Number(arg)
-        let base = Math.pow(10, n)
-        num = Math.round(num * base) / base
-        return num
-      }
-    }
-  })
-</script>
 
 <script type="application/json">
   {

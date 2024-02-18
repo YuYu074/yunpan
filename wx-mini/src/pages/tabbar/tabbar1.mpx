@@ -9,9 +9,15 @@
   import Dialog from '@vant/weapp/dialog/dialog'
 
   createPage({
-    setup(prop, { refs }) {
+    setup(prop, _this) {
       onShow(() => {
-        console.log(refs.indexRef)
+        console.log(_this.refs.indexRef)
+        if (typeof _this.getTabBar === 'function' &&
+          _this.getTabBar()) {
+          _this.getTabBar().setData({
+            selected: 0
+          })
+        }
         // refs.indexRef.loadMore()
       })
       // onPullDownRefresh(() => {

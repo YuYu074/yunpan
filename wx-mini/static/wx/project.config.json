@@ -26,10 +26,11 @@
         "useCompilerModule": false,
         "userConfirmedUseCompilerModuleSwitch": false,
         "bigPackageSizeSupport": false,
-        "condition": false
+        "condition": false,
+        "packNpmRelationList": [],
+        "ignoreUploadUnusedFiles": true
     },
     "appid": "wx34ea881f0993f82f",
-    "projectname": "小鱼网盘-客户端",
     "description": "毕业设计-小鱼网盘",
     "condition": {},
     "editorSetting": {
@@ -41,5 +42,6 @@
     "packOptions": {
         "ignore": [],
         "include": []
-    }
+    },
+    "projectname": "小鱼网盘-客户端"
 }
