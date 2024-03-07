@@ -1,7 +1,14 @@
 <template>
-  <view class="item">
-    <view class="left">{{item.title}}</view>
-    <view class="right">{{item.size}}</view>
+  <view class="content">
+    <view class="left">
+      <van-image width="30" height="30" src="{{item.icon}}" />
+    </view>
+    <view class="right">
+      <view class="name">{{item.title}}</view>
+      <view class="info">
+        {{item.time}} {{item.size}}
+      </view>
+    </view>
   </view>
 </template>
 
@@ -24,7 +31,26 @@
 </script>
 
 <style lang="stylus">
-
+.content
+  margin 12px
+  padding 12px
+  border 1px solid #000
+  border-radius 8px
+  display flex
+  .left
+    display flex
+    justify-content center
+    align-items center
+    max-width 40px
+  .right
+    margin-left 12px
+    display flex
+    flex-direction column
+    justify-content space-around
+    text-align left
+    .info
+      color #aaaaaa
+      font-size 10px
 </style>
 
 <script type="application/json">

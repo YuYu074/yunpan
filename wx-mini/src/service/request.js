@@ -76,11 +76,12 @@ async function request ({
   function fainFn (err, reject) {
     let errorMsg = '网络异常，请稍后重试。'
     wx.hideLoading()
+    console.log(err)
     if (err.data) {
       if (typeof err.data === 'string') {
         errorMsg = err.data
       } else {
-        errorMsg = get(err, 'data.error_code', '网络异常，请稍后重试。')
+        errorMsg = get(err, 'data.msg', '网络异常，请稍后重试。')
       }
     }
     let tokenOverdue = false

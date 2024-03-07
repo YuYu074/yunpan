@@ -2,7 +2,7 @@
   <view class="user-avt">
     <view class="user-avt__bd">
       <view class="user-avar__content">
-        <view class="user-avt__bd-img" bindtap="jump('/packageRMS/pages/user/userinfo')">
+        <view class="user-avt__bd-img" bindtap="clickAvt">
           <van-icon wx:if="{{ !isHasAvt }}" class="user-avt__bd-img-icon" name="manager" size="30px" />
         </view>
         <view class="user-avt__bd-con">
@@ -48,6 +48,8 @@
 
   createComponent({
     setup() {
+      const user = ref(mpx.getStorageSync("user"))
+
       const functionalList = [
         { title: '设置', link: '/packageRMS/pages/user/newstore' },
         { title: '客服中心', link: '/packageRMS/pages/user/mystore' },
@@ -85,12 +87,21 @@
           }
         })
       }
+
+      const clickAvt = () => {
+        if(user.value) {
+          console.log("已登录");
+        } else {
+          utils.jump('/pages/login/login', true)
+        }
+      }
       
       return {
         functionalList,
         addList,
         jump,
-        loginOut
+        loginOut,
+        clickAvt
       }
     }
   })

@@ -1,0 +1,100 @@
+<template>
+  <view class="page">
+    <view class="content">
+      <view class="top">
+        <van-image width="100" height="100" src="{{pageInfo.icon}}" />
+        <view class="text">{{pageInfo.title}}</view>
+        <view class="text">{{pageInfo.time}} {{pageInfo.size}}</view>
+      </view>
+      <view class="bottom">
+        <view class="download-btn">下载文件</view>
+        <view class="del-view-btn">
+          <view class="del-btn">删除文件</view>
+          <view class="view-btn">预览文件</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import mpx, { ref,  reactive, createPage, onLoad } from '@mpxjs/core'
+  import { api, request, tabbar } from '@/service'
+  import { useSetupStore } from '@/store'
+  import dayjs from 'dayjs'
+  createPage({
+    setup(){
+      const pageInfo = ref({})
+
+      const getData = () => {
+        pageInfo.value = {title: "file 1", size: "500KB", type: "pdf", time: "2024-3-4", icon: "https://img.yzcdn.cn/vant/cat.jpeg"}
+      }
+
+      onLoad((options) => {
+        console.log(options);
+        getData();
+      })
+
+      return {
+        pageInfo
+      }
+    }
+  })
+</script>
+
+<style lang="stylus">
+.page
+  width 100%
+  height 100vh
+  position relative
+  .content 
+    position absolute
+    top 50%
+    left 50%
+    transform translate(-50%, -50%)
+    .top
+      display flex
+      flex-direction column
+      align-items center
+      justify-content center
+      .text
+        font-size 16px
+        margin-top 24rpx
+    .bottom
+      margin 12px
+      width 80vw
+      .download-btn
+        padding 28rpx
+        display flex
+        justify-content center
+        align-items center
+        background-color #3AB1EF
+        border-radius 10px
+        margin-bottom 12px
+      .del-view-btn
+        display flex
+        justify-content space-between
+        align-items center
+        .del-btn
+          padding 28rpx
+          width 38%
+          background-color #cc2525
+          border-radius 10px
+          color #fff
+          text-align center
+        .view-btn
+          padding 28rpx
+          width 38%
+          background-color #c58585
+          border-radius 10px
+          text-align center
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+      "van-icon": "@vant/weapp/icon/index",
+      "van-image": "@vant/weapp/image/index"
+    }
+  }
+</script>

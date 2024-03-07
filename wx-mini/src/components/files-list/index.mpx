@@ -1,8 +1,15 @@
 <template>
   <view wx:if="{{listdata.length > 0}}" class="page">
-    <view wx:for="{{listdata}}" wx:key="id" class="item">
-      <view class="left">{{item.title}}</view>
-      <view class="right">{{item.size}}</view>
+    <view wx:for="{{listdata}}" wx:key="id" class="item" bindtap="toDetail(item.id)">
+      <view class="left">
+      <van-image width="30" height="30" src="{{item.icon}}" />
+    </view>
+    <view class="right">
+      <view class="name">{{item.file_name}}</view>
+      <view class="info">
+        {{item.last_time}} {{item.formatSize}}
+      </view>
+    </view>
     </view>
   </view>
   <view wx:else class="tip">
@@ -11,7 +18,7 @@
 </template>
 
 <script>
-  import mpx, { createComponent, ref, onMounted, reactive } from '@mpxjs/core'
+  import mpx, { createComponent, ref, onMounted, reactive, toRefs } from '@mpxjs/core'
   import { api, request, tabbar } from '@/service'
   import { useSetupStore } from '@/store'
   import dayjs from 'dayjs'
@@ -27,7 +34,15 @@
       onMounted(() => {
         console.log(props);
       })
-      return {}
+
+      const toDetail = id => {
+        mpx.navigateTo({
+          url: `/package/pages/file/details?id=${id}`
+        })
+      }
+      return {
+        toDetail
+      }
     }
   })
 </script>
@@ -37,11 +52,25 @@
     padding 24rpx
     background-color #fff
     .item
-      margin 24rpx 0
-      padding 24rpx
-      border 1px #aaa solid
+      margin 12px
+      padding 12px
+      border 1px solid #000
+      border-radius 8px
       display flex
-      justify-content space-between
+      .left
+        display flex
+        justify-content center
+        align-items center
+        max-width 40px
+      .right
+        margin-left 12px
+        display flex
+        flex-direction column
+        justify-content space-around
+        text-align left
+        .info
+          color #aaaaaa
+          font-size 10px
   .tip
     margin-top 30%
     text-align center
@@ -51,7 +80,9 @@
 <script type="application/json">
   {
     "usingComponents": {
-      "list-item": "./list-item"
+      "list-item": "./list-item",
+      "van-icon": "@vant/weapp/icon/index",
+      "van-image": "@vant/weapp/image/index"
     }
   }
 </script>

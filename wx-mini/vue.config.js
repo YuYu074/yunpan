@@ -17,7 +17,7 @@ module.exports = defineConfig({
         transRpxRules: [
           {
             mode: 'all', // 所有样式都启用转换rpx，除了注释为'use px'的样式不转换
-            comment: 'use rpx', // mode为'all'时，默认值为'use px'
+            comment: 'use px', // mode为'all'时，默认值为'use px'
             designWidth: 375,
             include: path.resolve('src')
           }

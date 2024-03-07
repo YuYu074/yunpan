@@ -42,10 +42,10 @@
 <script type="application/json">
   {
     "navigationBarTitleText": "文件",
-    "navigationBarBackgroundColor": "#3975C6",
+    "navigationBarBackgroundColor": "#3AB1EF",
     "navigationBarTextStyle": "white",
     "usingComponents": {
-      "index": "@/package/pages/file/list",
+      "index": "@/package/pages/file/index",
       "van-dialog": "@vant/weapp/dialog/index"
     }
   }

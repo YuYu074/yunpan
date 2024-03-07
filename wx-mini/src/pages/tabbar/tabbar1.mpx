@@ -42,7 +42,7 @@
 <script type="application/json">
   {
     "navigationBarTitleText": "首页",
-    "navigationBarBackgroundColor": "#3975C6",
+    "navigationBarBackgroundColor": "#3AB1EF",
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": true,
     "usingComponents": {

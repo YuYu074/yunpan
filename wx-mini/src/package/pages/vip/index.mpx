@@ -24,33 +24,13 @@
       <van-tab title="黑金会员"></van-tab>
     </van-tabs>
     <scroll-view scroll-x style="width: 100%;white-space: nowrap">
-      <view class="vip-price-wrap">
-        <view class="vip-price-item">
+      <view class="vip-price-wrap" wx:for="{{priceData}}" bindtap="checkPrice(index)">
+        <view class="vip-price-item {{active == index ? 'active' : ''}}">
           <view class="time">
-            1个月
+            {{item.title}}
           </view>
           <view class="price">
-            ￥15
-          </view>
-        </view>
-      </view>
-      <view class="vip-price-wrap">
-        <view class="vip-price-item">
-          <view class="time">
-            1个月
-          </view>
-          <view class="price">
-            ￥15
-          </view>
-        </view>
-      </view>
-      <view class="vip-price-wrap">
-        <view class="vip-price-item">
-          <view class="time">
-            1个月
-          </view>
-          <view class="price">
-            ￥15
+            ￥{{item.price}}
           </view>
         </view>
       </view>
@@ -84,17 +64,36 @@
 </template>
 
 <script>
-import mpx, { ref, createComponent } from '@mpxjs/core'
+  import mpx, { ref, createComponent, onMounted } from '@mpxjs/core'
   import { utils, request, api } from '@/service'
   import get from 'lodash-es/get'
 
   createComponent({
-    setup() {
+    setup(props, {refs}) {
       const tabActive = ref(0)
       const onTabChange = (e) => {
         console.log(e);
         tabActive.value = e.detail.index
       }
+
+      const priceData = [{
+        id: '',
+        title: '1个月',
+        price: '15',
+        discount: '',
+      },{
+        id: '',
+        title: '3个月',
+        price: '40',
+        discount: '',
+      },{
+        id: '',
+        title: '12个月',
+        price: '120',
+        discount: '',
+      }]
+      const active = ref(0)
+      const checkPrice = index => active.value = index
 
       const paywayRadio = ref('1')
       const onPaywayChange = e => {
@@ -118,8 +117,24 @@ import mpx, { ref, createComponent } from '@mpxjs/core'
         ]
       }
 
+      onMounted(() => {
+        let data = [
+          {
+            accountname: 'accountname',
+            billtype: 'billtype',
+            billdate: 'billdate',
+            billcode: 'billcode',
+            bussinesscontent: 'bussinesscontent',
+          }
+        ]
+        refs.tableRef.setValue(data)
+      })
+
       return {
         tabActive,
+        priceData,
+        active,
+        checkPrice,
         onTabChange,
         paywayRadio,
         onPaywayChange,
@@ -152,6 +167,9 @@ import mpx, { ref, createComponent } from '@mpxjs/core'
         font-size 20px
         font-weight 700
         color #1296db
+    .active
+      border 3px solid #3AB1EF
+      background-color #81CDF5
   .table
     margin 36rpx 24rpx 120rpx 24rpx
     background-color #fff
@@ -162,6 +180,7 @@ import mpx, { ref, createComponent } from '@mpxjs/core'
     margin 0 auto
     padding 32rpx 32rpx 180rpx 32rpx
     width 686rpx
+    background-color #fff
     .btn
       padding 0 16rpx
       height 70rpx

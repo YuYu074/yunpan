@@ -5,5 +5,6 @@ npm-debug.log
 deploy/
 output/
 dist/
+allFiles/
 .vscode/
 node_modules

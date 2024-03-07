@@ -1,17 +1,186 @@
 <template>
-  
+  <view class="login-container">
+    <view class="logo">
+    </view>
+    <view class="login">
+      <!-- 账号输入区 -->
+      <view class="login-input">
+        <view class="login-input-title">账号</view>
+        <input
+          class="login-input-body"
+          value="{{account}}"
+          placeholder="请输入您的手机号"
+          bindinput="accountInput"
+          type="text"
+        />
+      </view>
+      <!-- 密码输入区 -->
+      <view class="login-input">
+        <view class="login-input-title">密码</view>
+        <input
+          class="login-input-body"
+          password="true"
+          value="{{password}}"
+          type="text"
+          placeholder="请输入密码"
+          bindinput="pwdInput"
+        />
+      </view>
+      <!-- 按钮区 -->
+      <view class="btn-wrap">
+        <view class="btn" bindtap="login()">登 录</view>
+      </view>
+      <!-- 用户协议勾选区 -->
+      <view class="auto" bindtap="agreeChange">
+        <image src="~@/asset/img/login-select.png" wx:if="{{isAgree}}"></image>
+        <image src="~@/asset/img/login-select-no.png" wx:else></image>
+        我已阅读同意用户协议和<text catchtap="toProtocol">《服务协议》</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
-
+  import mpx, { createPage } from '@mpxjs/core'
+  import { request, api, tabbar } from '@/service'
+  import get from 'lodash-es/get'
+  import { store } from '@/store'
+  createPage({
+    data: {
+      // account: '15366293916',
+      // password: '123456',
+      account: '',
+      password: '',
+      account: '',
+      password: '',
+      isAgree: false
+    },
+    onLoad(e) {
+      console.log(e)
+      this.account = mpx.getStorageSync('account')
+      this.password = mpx.getStorageSync('password')
+      this.isAgree = mpx.getStorageSync('isAgree') || false
+    },
+    methods: {
+      async login() {
+        let msg = ''
+        if (!this.isAgree) {
+          msg = '请先阅读并同意《服务协议》'
+        }
+        if (!this.account || !this.password) {
+          msg = '请完善登录信息'
+        }
+        if (msg) {
+          mpx.showModal({
+            title: '提示',
+            content: msg,
+            showCancel: false,
+            success(e) {}
+          })
+          return false
+        }
+        this.account = this.account.replace(/\s*/g,"")
+        this.password = this.password.replace(/\s*/g,"")
+        const res = await request({
+          url: `${api.baseUrl}/login`,
+          data: {
+            account: this.account,
+            password: this.password
+          }
+        })
+        console.log(res);
+        if(res.data.code == 200) {
+          mpx.setStorageSync('user', res.data.data)
+          mpx.setStorageSync('account', this.account)
+          mpx.setStorageSync('password', this.password)
+          tabbar.jump('/pages/tabbar/tabbar1')
+        }
+      },
+      accountInput(e) {
+        this.account = e.detail.value
+      },
+      pwdInput(e) {
+        this.password = e.detail.value
+      },
+      agreeChange(e) {
+        this.isAgree = !this.isAgree
+        mpx.setStorageSync('isAgree', this.isAgree)
+      },
+    }
+  })
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
+  @import '~@/asset/style/common.styl'
 
+  page
+    display block
+    min-height 100%
+    background-color white
+    position relative
+  .login-bg
+    background-size cover
+    position absolute
+    width 100%
+    height 100%
+    display block
+  .logo
+    width 750rpx
+    height 366rpx
+    background-image url('~@/asset/img/login_bg@2x.jpg')
+    background-size cover
+    background-position center center
+    overflow hidden
+  .logo image
+    display block
+    margin 60rpx auto 0
+    width 380rpx
+  .login
+    text-align center
+    padding 20px 30px
+  .login-input
+    width 100%
+    margin 60rpx auto
+    font-size 14px
+  .login-input-title
+    text-align left
+    height 50rpx
+  .login-input-body
+    text-align left
+    height 80rpx
+    line-height 50rpx
+    color text
+    border-bottom 2rpx solid #979797;
+  .btn-wrap
+    width 100%
+    margin 250rpx 0 0
+  .btn
+    btn()
+  .auto
+    width 90%
+    margin 100rpx auto
+    text-align center
+    line-height 27px
+    font-size 27rpx
+    font-weight 400
+    color #979797
+  .auto image
+    display inline-block
+    margin-right 4px
+    width 27px
+    height 27px
+    vertical-align top
+  .auto text
+    color #A6C8FF
+    text-decoration underline
 </style>
 
 <script type="application/json">
   {
-    "usingComponents": {}
+    "navigationBarTitleText": "登录小鱼网盘",
+    "disableScroll": true,
+    "usingComponents": {
+      "van-icon": "@vant/weapp/icon/index"
+    }
   }
 </script>

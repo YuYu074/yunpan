@@ -38,17 +38,18 @@ createApp({
 <script type="application/json">
   {
     "pages": [
+      "./pages/login/login",
       "./pages/tabbar/tabbar1",
       "./pages/tabbar/tabbar2",
       "./pages/tabbar/tabbar3",
-      "./pages/tabbar/tabbar4",
-      "./pages/login/login"
+      "./pages/tabbar/tabbar4"
     ],
     "subpackages": [
       {
         "root": "package",
         "pages": [
-          "./pages/file/list",
+          "./pages/file/details",
+          "./pages/file/index",
           "./pages/vip/index"
         ]
       },
@@ -61,7 +62,7 @@ createApp({
       }
     ],
     "window": {
-      "navigationBarBackgroundColor": "#1A85FF",
+      "navigationBarBackgroundColor": "#3AB1EF",
       "navigationBarTextStyle": "white",
       "navigationBarTitleText": "小鱼网盘",
       "enablePullDownRefresh": false,
@@ -70,7 +71,7 @@ createApp({
     "tabBar": {
       "custom": true,
       "color": "#666666",
-      "selectedColor": "#1A85FF",
+      "selectedColor": "#3AB1EF",
       "borderStyle": "black",
       "backgroundColor": "#FFFFFF",
       "position": "bottom",

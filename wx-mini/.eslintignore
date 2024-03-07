@@ -6,7 +6,7 @@ src/packageDMs/**/*
 src/components/*
 src/components/**/*
 src/store/*
-src/service/*
+src/service/*.js
 src/pages/*
 src/pages/**/*
 src/*

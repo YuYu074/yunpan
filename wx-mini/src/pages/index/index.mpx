@@ -44,7 +44,7 @@
     <!-- 常用应用 -->
     <view class="row">
       <view class="row-add">
-        <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="jump(item.link)">
+        <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="toFiles(item.type)">
           <van-icon name="{{item.icon}}" color="{{item.color}}" size="50px"/>
           <view class="row-add-title">{{ item.title }}</view>
         </view>
@@ -54,11 +54,11 @@
     <!-- 可用空间 -->
     <view class="row">
       <view class="item">
-        <view>当前已用：{{11}}GB</view>
-        <view>总容量：{{22}}GB</view>
+        <view>当前已用：{{usedSpace}}</view>
+        <view>总容量：{{allSpace}}GB</view>
       </view>
       <view class="progress">
-        <van-progress percentage="50"/>
+        <van-progress percentage="{{spacePer}}"/>
       </view>
       <view class="item btn" bindtap="jumpBar('/pages/tabbar/tabbar3')">
         开通会员扩容>>
@@ -118,11 +118,32 @@
 
 			//常用功能
       let addList = [
-        { title: '视 频', icon: 'video', color: '#1296db', link: '/packageRMS/pages/sacn_sign/dist' },
-        { title: '图 片', icon: 'photo', color: '#70C1B3', link: '/packageRMS/pages/place_order/index' },
-        { title: '文 档', icon: 'description', color: '#f3c71b', link: '/packageRMS/pages/order/list' },
-        { title: '音 乐', icon: 'live', color: '#ed71fe', link: '/packageRMS/pages/protocol_manage/index' }
+        { title: '视 频', icon: 'video', color: '#1296db', type: 'video' },
+        { title: '图 片', icon: 'photo', color: '#70C1B3', type: 'photo' },
+        { title: '文 档', icon: 'description', color: '#f3c71b', type: 'document' },
+        { title: '音 乐', icon: 'live', color: '#ed71fe', type: 'music' }
       ]
+
+      //查询容量
+      //已用空间
+      let usedSpace = ref('')
+      //总空间
+      let allSpace = ref(0)
+      //已用空间百分比
+      let spacePer = ref(0)
+      const getAllSpace = async () => {
+        let res = await request({
+          url: `${api.baseUrl}/vip/getAllSpace`,
+          data: {
+            id: mpx.getStorageSync('user').id
+          }
+        })
+        let usedSpaceM = (res.data.data.used_space / (1024 * 1024)).toFixed(2)
+        let usedSpaceG = (res.data.data.used_space / (1024 * 1024 * 1024)).toFixed(2)
+        usedSpace.value = usedSpaceG < 1 ? `${usedSpaceM}M` : `${usedSpaceG}G`
+        allSpace.value = res.data.data.vip_space || 0
+        spacePer.value = (+usedSpaceG / +allSpace.value).toFixed(2) * 100
+      }
 
       const jump = (url, isReLaunch = false) => {
           utils.jump(url, isReLaunch)
@@ -132,10 +153,16 @@
         tabbar.jump(url)
       }
 
-			onMounted(() => {
+      const toFiles = type => {
+        mpx.navigateTo({
+          url: `/package/pages/file/index?type=${type}`
+        })
+      }
+
+			onMounted(async () => {
         tabbar.init()
 				getBanner()
-				console.log(banner.value);
+        getAllSpace()
 			})
 
 			return {
@@ -144,8 +171,12 @@
         onSearchChange,
 				banner,
 				addList,
+        usedSpace,
+        allSpace,
+        spacePer,
         jump,
-        jumpBar
+        jumpBar,
+        toFiles
 			}
 		}
   })

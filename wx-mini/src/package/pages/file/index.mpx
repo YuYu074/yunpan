@@ -1,0 +1,318 @@
+<template>
+  <view class="page">
+    <!-- 搜索 -->
+    <view>
+      <van-search
+        value="{{ searchKey }}"
+        input-align="center"
+        placeholder="搜索网盘文件"
+        bind:search="onSearch"
+        bind:change="onSearchChange"
+        clearable
+      />
+    </view>
+    <files-list listdata="{{listdata}}"></files-list>
+    <!-- 传输列表按钮 -->
+    <view class="upload-btn2" bindtap="showUpload">
+      <van-icon name="sort" size="50" color="#3AB1EF"/>
+    </view>
+    <!-- 上传按钮 -->
+    <view class="upload-btn" bindtap="upload">
+      <van-icon name="add" size="80" color="#3AB1EF"/>
+    </view>
+    <!-- 传输列表 -->
+    <van-popup
+      show="{{ show }}"
+      bind:close="showUpload"
+      round
+    >
+      <view class="popup">
+        <van-tabs wx:if="{{show}}" color="#3AB1EF" active="{{ uploadTabActive }}" bind:change="onUploadTabChange">
+          <van-tab title="正在上传">
+            <view wx:if="{{uploadingList.length > 0}}" class="page">
+              <view wx:for="{{uploadingList}}" wx:key="id" class="item">
+                <view class="left">
+                <van-image width="30" height="30" src="{{item.icon}}" />
+                <view class="name">{{item.title}}</view>
+              </view>
+              <view class="right">
+                <van-circle value="{{ item.value }}" size="30" text="" />
+              </view>
+              </view>
+            </view>
+            <view wx:else class="tip">
+              --暂无数据--
+            </view>
+          </van-tab>
+          <van-tab title="正在下载">
+            <view wx:if="{{downloadingList.length > 0}}" class="page">
+              <view wx:for="{{downloadingList}}" wx:key="id" class="item">
+                <view class="left">
+                <van-image width="30" height="30" src="{{item.icon}}" />
+                <view class="name">{{item.title}}</view>
+              </view>
+              <view class="right">
+                <van-circle value="{{ item.value }}" size="30" text="" />
+              </view>
+              </view>
+            </view>
+            <view wx:else class="tip">
+              --暂无数据--
+            </view>
+          </van-tab>
+        </van-tabs>
+      </view>
+    </van-popup>
+  </view>
+</template>
+
+<script>
+  import mpx, { ref, onMounted, reactive, createPage, computed } from '@mpxjs/core'
+  import { api, request, tabbar, uploadFile } from '@/service'
+  import { useSetupStore } from '@/store'
+  import dayjs from 'dayjs'
+  import imageIcon from '@/asset/fileIcon/image@2x.png'
+  import videoIcon from '@/asset/fileIcon/video@2x.png'
+  import radioIcon from '@/asset/fileIcon/music@2x.png'
+  import compressIcon from '@/asset/fileIcon/image@2x.png'
+  import wordIcon from '@/asset/fileIcon/word@2x.png'
+  import excelIcon from '@/asset/fileIcon/excel@2x.png'
+  import pptIcon from '@/asset/fileIcon/ppt@2x.png'
+  import pdfIcon from '@/asset/fileIcon/pdf@2x.png'
+  import txtIcon from '@/asset/fileIcon/txt@2x.png'
+  import exeIcon from '@/asset/fileIcon/image@2x.png'
+  import otherIcon from '@/asset/fileIcon/common@2x.png'
+
+  // 节流
+  function throttle(fn, delay = 500) {
+    let flag = true;
+    return function() {
+      if(!flag) return;
+      flag = false;
+      setTimeout(() => {
+        fn.apply(this, arguments);
+        flag = true;
+      }, delay)
+    }
+  }
+
+  createPage({
+    setup(){
+      const uploadingList = computed(() => {
+        console.log(process);
+        let list = process.value.filter(i => i.progress != 100).map(i => {
+          if(i.process == 30) console.log(i)
+          i.icon = 'https://img.yzcdn.cn/vant/cat.jpeg'
+          return i
+        })
+        console.log(list);
+        return list
+      })
+      const downloadingList = computed(() => {
+        console.log(process);
+        let list = process.value.filter(i => i.progress != 100).map(i => {
+          if(i.process == 30) console.log(i)
+          i.icon = 'https://img.yzcdn.cn/vant/cat.jpeg'
+          return i
+        })
+        console.log(list);
+        return list
+      })
+
+      // 列表数据
+      const listdata = ref([])
+      const iconList = {
+        image: imageIcon,
+        video: videoIcon,
+        radio: radioIcon,
+        compress: compressIcon,
+        word: wordIcon,
+        excel: excelIcon,
+        ppt: pptIcon,
+        pdf: pdfIcon,
+        txt: txtIcon,
+        exe: exeIcon,
+        other: otherIcon
+      }
+      const getFileList = async () => {
+        const res = await request({
+          url: `${api.baseUrl}/getFileList`,
+          data: {
+            userid: mpx.getStorageSync('user').id,
+            key: searchKey.value || '',
+            type: ''
+          }
+        })
+        listdata.value = res.data.data.map(i => ({
+          ...i,
+          icon: iconList[i.type],
+          formatSize: formatSize(i.size)
+        }))
+      }
+
+      // 格式化文件大小
+      const formatSize = (size) => {
+        if(null==size||size==''){
+          return "0 B";
+        }
+        var unitArr = new Array("B","KB","MB","GB","TB","PB","EB","ZB","YB");
+        var index=0;
+        var srcsize = parseFloat(size);
+        index=Math.floor(Math.log(srcsize)/Math.log(1024));
+        var size =srcsize/Math.pow(1024,index);
+        size=size.toFixed(2);
+        return size+unitArr[index];
+      }
+
+      // 搜索
+      const searchKey = ref('')
+      const onSearch = () => {
+        // 发起搜索请求
+        getFileList()
+      }
+      const onSearchChange = (e) => {
+        searchKey.value = e.detail
+      }
+
+      // 文件类型校验
+      const checkType = (ext) => {
+        const imageList = ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp']
+        const videoList = ['mp4', 'm2v', 'mkv']
+        const radioList = ['mp3', 'wav', 'wmv']
+        const compressList = ['zip', 'rar', '7z']
+        const wordList = ['doc', 'docx']
+        const excelList = ['xls', 'xlsx']
+        const pptList = ['ppt', 'pptx']
+        const pdfList = ['pdf']
+        const txtList = ['txt']
+        const exeList = ['exe']
+        if (imageList.includes(ext)) return 'image'
+        else if (videoList.includes(ext)) return 'video'
+        else if (radioList.includes(ext)) return 'radio'
+        else if (compressList.includes(ext)) return 'compress'
+        else if (wordList.includes(ext)) return 'word'
+        else if (excelList.includes(ext)) return 'excel'
+        else if (pptList.includes(ext)) return 'ppt'
+        else if (pdfList.includes(ext)) return 'pdf'
+        else if (txtList.includes(ext)) return 'txt'
+        else if (exeList.includes(ext)) return 'exe'
+        else return 'other'
+      }
+
+      // 记录进度条的变化
+      const process = ref([])
+      // 文件上传
+      const upload = () => {
+        // 调用选择文件接口
+        wx.chooseMessageFile({
+          count: 9, // 文件数量
+          type: 'file',
+          success (res) {
+            // tempFilePath可以作为img标签的src属性显示图片
+            const tempFilePaths = res.tempFiles
+            console.log('选择', res)
+            console.log(tempFilePaths)
+            tempFilePaths.forEach((i, index) => {
+              console.log(i)
+              process.value[index] = {
+                ...i,
+                type: checkType(i.name.split('.').at(-1))
+              }
+              const uploadTask = wx.uploadFile({ // 调用上传文件接口
+                url: api.baseUrl + "/fileUpload",
+                filePath: i.path,
+                name: 'file',
+                method: "post",
+                header: {
+                  "content-type": "multipart/form-data",
+                  "Authorization": wx.getStorageSync("token")
+                },
+                formData: {
+                  'name': i.name,
+                  'type': checkType(i.name.split('.').at(-1)),
+                  'id': wx.getStorageSync('user').id
+                },
+                success (res) {
+                  console.log(res)
+                  getFileList()
+                  wx.hideLoading()
+                }
+              })
+
+              uploadTask.onProgressUpdate((res) => {
+                process.value[index].progress = res.progress
+                // console.log('已经上传的数据长度', res.totalBytesSent)
+                // console.log('预期需要上传的数据总长度', res.totalBytesExpectedToSend)
+              })
+            })
+          }
+        })
+      }
+      //显示文件上传进度弹窗
+      const show = ref(false)
+      const showUpload = () => {
+        show.value = !show.value
+      }
+
+      onMounted(()=>{
+        getFileList()
+        listdata.value = [
+          {title: "file 1", size: "500KB", type: "pdf", time: "2024-3-4"},
+          {title: "file 2", size: "800KB", type: "word", time: "2024-3-5"},
+          {title: "file 3", size: "1000KB", type: "image", time: "2024-3-6"}
+        ]
+      })
+
+      return {
+        listdata,
+        searchKey,
+        upload,
+        show,
+        showUpload,
+        uploadingList,
+        downloadingList
+      }
+    }
+  })
+</script>
+
+<style lang="stylus">
+.upload-btn
+  position fixed
+  bottom 15vh
+  right 5vw
+/* use px */
+.upload-btn2
+  position fixed
+  bottom 30vh
+  right 5vw
+  /* use px */
+  width 78px
+  /* use px */
+  height 78px
+  /* use px */
+  padding 2px
+  display flex
+  justify-content center
+  align-items center
+  /* use px */
+  border-radius 40px
+  background-color #fff
+.popup
+  width 70vw !important
+  height 50vh !important
+  padding 20px !important
+</style>
+
+<script type="application/json">
+  {
+    "usingComponents": {
+      "files-list": "@/components/files-list",
+      "van-search": "@vant/weapp/search/index",
+      "van-icon": "@vant/weapp/icon/index",
+      "van-popup": "@vant/weapp/popup/index",
+      "van-tab": "@vant/weapp/tab/index",
+      "van-tabs": "@vant/weapp/tabs/index"
+    }
+  }
+</script>
