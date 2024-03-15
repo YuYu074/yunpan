@@ -5,7 +5,7 @@
       <van-image width="30" height="30" src="{{item.icon}}" />
     </view>
     <view class="right">
-      <view class="name">{{item.file_name}}</view>
+      <view class="name">{{item.show_name}}</view>
       <view class="info">
         {{item.last_time}} {{item.formatSize}}
       </view>

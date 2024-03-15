@@ -6,12 +6,9 @@
           <van-icon wx:if="{{ !isHasAvt }}" class="user-avt__bd-img-icon" name="manager" size="30px" />
         </view>
         <view class="user-avt__bd-con">
-          <view class="user-avt__bd-name" wx:if="{{user}}">
-            {{ user.userinfoname }} -- 黄金会员
-          </view>
-          <view wx:else>请登录</view>
-          <view class="user-avt__bd-des">当前权益：白金会员</view>
-          <view class="user-avt__bd-des">2024-12-31到期</view>
+          <view>{{user.user_name}}</view>
+          <view class="user-avt__bd-des">当前权益：{{user.vip_name}}</view>
+          <view class="user-avt__bd-des" wx:if="{{user.vip_ddl}}">{{user.vip_dll}}到期</view>
         </view>
       </view>
     </view>
@@ -58,7 +55,7 @@
 
   <view class="bottom">
     <view class="btn">
-      确认协议并支付
+      确认支付
     </view>
   </view>
 </template>
@@ -67,31 +64,45 @@
   import mpx, { ref, createComponent, onMounted } from '@mpxjs/core'
   import { utils, request, api } from '@/service'
   import get from 'lodash-es/get'
+  import vipData from './vipData'
 
   createComponent({
     setup(props, {refs}) {
+      const user = mpx.getStorageSync('user')
+
       const tabActive = ref(0)
       const onTabChange = (e) => {
         console.log(e);
         tabActive.value = e.detail.index
+        getPriceData()
       }
 
-      const priceData = [{
-        id: '',
-        title: '1个月',
-        price: '15',
-        discount: '',
-      },{
-        id: '',
-        title: '3个月',
-        price: '40',
-        discount: '',
-      },{
-        id: '',
-        title: '12个月',
-        price: '120',
-        discount: '',
-      }]
+      const priceData = ref([])
+      const getPriceData = async () => {
+        const res = await request({
+          url: `${api.baseUrl}/getPriceData`,
+          data: {
+            vip_name: ['黄金会员', '白金会员', '黑金会员'][tabActive.value]
+          }
+        })
+        priceData.value = [{
+          id: '01',
+          title: '1个月',
+          price: res.data.data.vip_price_month,
+          discount: '',
+        },{
+          id: '02',
+          title: '3个月',
+          price: res.data.data.vip_price_quarter,
+          discount: '',
+        },{
+          id: '03',
+          title: '12个月',
+          price: res.data.data.vip_price_year,
+          discount: '',
+        }]
+        console.log(priceData);
+      }
       const active = ref(0)
       const checkPrice = index => active.value = index
 
@@ -109,28 +120,21 @@
         checkable: '',
         showTotal: false,
         columns: [
-          { type: 'text', title: '权益项目', name: 'accountname', color: '#333333', bgc: '#F4F6F8' },
-          { type: 'text', title: '普通会员', name: 'billtype', color: '#333333', bgc: '#3AB1EF', width: '75' },
-          { type: 'text', title: '黄金会员', name: 'billdate', color: '#555555', bgc: '#FFD700', width: '75' },
-          { type: 'text', title: '白金会员', name: 'billcode', color: '#333333', bgc: '#EEE8AA',width: '75' },
-          { type: 'text', title: '黑金会员', name: 'bussinesscontent', color: '#B8860B', bgc: '#222222', width: '75' },
+          { type: 'text', title: '权益项目', name: 'name', color: '#333333', bgc: '#F4F6F8' },
+          { type: 'text', title: '普通会员', name: 'vip', color: '#333333', bgc: '#3AB1EF', width: '75' },
+          { type: 'text', title: '黄金会员', name: 'svip', color: '#555555', bgc: '#FFD700', width: '75' },
+          { type: 'text', title: '白金会员', name: 'ssvip', color: '#333333', bgc: '#EEE8AA',width: '75' },
+          { type: 'text', title: '黑金会员', name: 'sssvip', color: '#B8860B', bgc: '#222222', width: '75' },
         ]
       }
 
       onMounted(() => {
-        let data = [
-          {
-            accountname: 'accountname',
-            billtype: 'billtype',
-            billdate: 'billdate',
-            billcode: 'billcode',
-            bussinesscontent: 'bussinesscontent',
-          }
-        ]
-        refs.tableRef.setValue(data)
+        refs.tableRef.setValue(vipData)
+        getPriceData()
       })
 
       return {
+        user,
         tabActive,
         priceData,
         active,

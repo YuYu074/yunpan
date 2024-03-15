@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const { login, findByName, save, update, deleteById } = require('./login')
-const { getAllSpace } = require('./vip')
-const { fileUpload, getFileList } = require('./file')
+const { getAllSpace, getPriceData } = require('./vip')
+const { fileUpload, getFileList, getLastFileList } = require('./file')
 router
   .post('/login', (req, res) => {
     const { account, password } = req.body
@@ -22,8 +22,16 @@ router
     fileUpload(files, userid).then(data => res.status(200).send(data), err => res.status(500).send(err))
   })
   .post('/getFileList', (req, res) => {
-    const { userid, key } = req.body
-    getFileList(key, userid).then(data => res.status(200).send(data), err => res.status(500).send(err))
+    const { userid, key, type, sort } = req.body
+    getFileList(key, userid, type, sort).then(data => res.status(200).send(data), err => res.status(500).send(err))
+  })
+  .post('/getLastFileList', (req, res) => {
+    const { userid } = req.body
+    getLastFileList(userid).then(data => res.status(200).send(data), err => res.status(500).send(err))
+  })
+  .post('/getPriceData', (req, res) => {
+    const { vip_name } = req.body
+    getPriceData(vip_name).then(data => res.status(200).send(data), err => res.status(500).send(err))
   })
 
 

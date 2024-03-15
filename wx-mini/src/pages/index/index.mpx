@@ -44,7 +44,7 @@
     <!-- 常用应用 -->
     <view class="row">
       <view class="row-add">
-        <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="toFiles(item.type)">
+        <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="toFiles(index)">
           <van-icon name="{{item.icon}}" color="{{item.color}}" size="50px"/>
           <view class="row-add-title">{{ item.title }}</view>
         </view>
@@ -70,14 +70,14 @@
       <view class="title">
         最近文件
       </view>
-      <view class="content">
-        <view class="left">
+      <view class="content" wx:for="{{lastFileList}}" wx:key="item.id">
+        <!-- <view class="left">
           <van-image width="30" height="30" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-        </view>
+        </view> -->
         <view class="right">
-          <view class="name">test.png</view>
+          <view class="name">{{item.show_name}}</view>
           <view class="info">
-            2023-12-13 13:41 345KB
+            {{item.last_time}} {{item.formatSize}}
           </view>
         </view>
       </view>
@@ -91,6 +91,7 @@
   import mpx, { createComponent, ref, onMounted, reactive } from '@mpxjs/core'
   import { tabbar, utils, api, request } from '@/service'
   import { useSetupStore } from '@/store'
+  import { formatSize } from '@/utils'
   import dayjs from 'dayjs'
   import Dialog from '@vant/weapp/dialog/dialog'
   
@@ -145,6 +146,22 @@
         spacePer.value = (+usedSpaceG / +allSpace.value).toFixed(2) * 100
       }
 
+      //查询最近文件
+      const lastFileList = ref([])
+      const getLastFileList = async () => {
+        let res = await request({
+          url: `${api.baseUrl}/getLastFileList`,
+          data: {
+            userid: mpx.getStorageSync('user').id
+          }
+        })
+        lastFileList.value = res.data.data.map(i => ({
+          ...i,
+          formatSize: formatSize(+i.size)
+        }))
+        console.log(lastFileList.value);
+      }
+
       const jump = (url, isReLaunch = false) => {
           utils.jump(url, isReLaunch)
       }
@@ -153,17 +170,24 @@
         tabbar.jump(url)
       }
 
-      const toFiles = type => {
+      const toFiles = index => {
         mpx.navigateTo({
-          url: `/package/pages/file/index?type=${type}`
+          url: `/package/pages/file/index?type=${index + 1}`
         })
       }
 
 			onMounted(async () => {
         tabbar.init()
+				// getBanner()
+        // getAllSpace()
+        // getLastFileList()
+			})
+      
+      const refresh = async () => {
 				getBanner()
         getAllSpace()
-			})
+        getLastFileList()
+			}
 
 			return {
         searchKey,
@@ -176,7 +200,9 @@
         spacePer,
         jump,
         jumpBar,
-        toFiles
+        toFiles,
+        lastFileList,
+        refresh
 			}
 		}
   })

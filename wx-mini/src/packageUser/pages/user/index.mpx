@@ -1,17 +1,14 @@
 <template>
-  <view class="user-avt">
-    <view class="user-avt__bd">
+  <view class="user-avt content" style="width: auto">
+    <view class="user-avt__bd"  style="padding-top: 32rpx;">
       <view class="user-avar__content">
         <view class="user-avt__bd-img" bindtap="clickAvt">
           <van-icon wx:if="{{ !isHasAvt }}" class="user-avt__bd-img-icon" name="manager" size="30px" />
         </view>
         <view class="user-avt__bd-con">
-          <view class="user-avt__bd-name" wx:if="{{user}}">
-            {{ user.userinfoname }} -- 黄金会员
-          </view>
-          <view wx:else>请登录</view>
-          <view class="user-avt__bd-des">当前已用空间：11GB</view>
-          <view class="user-avt__bd-des">总空间：22GB</view>
+          <view>{{user.user_name}}</view>
+          <view class="user-avt__bd-des">当前权益：{{user.vip_name}}</view>
+          <view class="user-avt__bd-des" wx:if="{{user.vip_ddl}}">{{user.vip_dll}}到期</view>
         </view>
       </view>
     </view>
@@ -48,7 +45,7 @@
 
   createComponent({
     setup() {
-      const user = ref(mpx.getStorageSync("user"))
+      const user = mpx.getStorageSync("user")
 
       const functionalList = [
         { title: '设置', link: '/packageRMS/pages/user/newstore' },
@@ -69,6 +66,8 @@
           wx.makePhoneCall({
             phoneNumber: '40012341234'
           })
+        } else if (url = 'loginout'){
+          loginOut()
         } else {
           utils.jump(url, isReLaunch)
         }
@@ -81,8 +80,8 @@
           success (e) {
             if (e.confirm) {
               // auth.loginOut()
-              mpx.removeStorageSync('storeInfo')
-              utils.jump('/pages/login/login?noautologin=1', true)
+              mpx.removeStorageSync('user')
+              utils.jump('/pages/login/login', true)
             }
           }
         })
@@ -97,6 +96,7 @@
       }
       
       return {
+        user,
         functionalList,
         addList,
         jump,
@@ -109,6 +109,10 @@
 
 <style lang="stylus">
   @import '~@/asset/style/user.styl'
+  .content
+    margin 24rpx
+    background-color #fff
+    border-radius 12rpx
   .function-wrap
     border-radius radius-xl
     margin dis-m

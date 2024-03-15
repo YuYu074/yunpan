@@ -18,7 +18,7 @@
             selected: 0
           })
         }
-        // refs.indexRef.loadMore()
+        _this.refs.indexRef.refresh()
       })
       // onPullDownRefresh(() => {
         // if (refs.indexRef && refs.indexRef.getIncome) {
