@@ -17,12 +17,10 @@ const Pool = mysql.createPool({
  * @returns {Promise} Promise
  */
 function fileUpload(files, userid) {
-  console.log(files);
   return new Promise((resolve, reject) => {
     let newName = files.path + path.parse(files.originalname).ext;
     let hashName = files.filename + path.parse(files.originalname).ext;
     let thisTime = new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString();
-    console.log(newName, hashName, thisTime);
     fs.rename(files.path, newName ,(err)=>{
       if(err){
         reject({ 'code': 500, 'msg': "文件资源存在问题，无法上传" });
@@ -33,8 +31,10 @@ function fileUpload(files, userid) {
           } else {
             // 查询是否有同名文件
             c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
+              console.log(err);
               !err && c.query('SELECT * FROM `' + data[0].user_name + '` WHERE file_name="' + files.originalname + '";', (err2, data2)=>{
                 if(data2.length > 0) {
+                  console.log(data2);
                   let namearr = files.originalname.split('.')
                   namearr[namearr.length - 2] = `${namearr[namearr.length - 2]}(${data2.length})`
                   files.showName = namearr.join('.')
@@ -42,8 +42,8 @@ function fileUpload(files, userid) {
                   files.showName = files.originalname
                 }
                 //写入数据库
-                let inputSql1 = `INSERT INTO \`${data[0].user_name}\` (file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0")`
-                let inputSql2 = `INSERT INTO \`allfiles\` (user_id, file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${userid}", "${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0")`
+                let inputSql1 = `INSERT INTO \`${data[0].user_name}\` (file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0");`
+                let inputSql2 = `INSERT INTO \`allfiles\` (user_id, file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${userid}", "${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0");`
                 c.query(inputSql1, (err3, data3)=>{
                   if(err) {
                     reject({ 'code': 500, 'msg': "数据库连接失败" });
@@ -166,6 +166,36 @@ function getLastFileList(userid) {
     })
   })
 }
+
+// /**
+//  * @description downFile
+//  * @param {String} userid
+//  * @returns {Promise} Promise
+//  */
+// function downFile(userid, id) {
+//   return new Promise((resolve, reject) => {
+//     Pool.getConnection((err, c)=>{
+//       if(err) {
+//         reject({ 'code': 500, 'msg': "数据库连接失败" });
+//       } else {
+//         c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
+//         !err & c.query('SELECT * FROM `' + data[0].user_name + '` WHERE id=' + id + ';', (err2, data2)=>{
+//             if(err) {
+//               reject({ 'code': 500, 'msg': "数据库连接失败" });
+//             } else {
+//               let {file_name:name, hash_name:hashname} = data2[0];// 待下载的文件名
+//               console.log(__dirname);
+//               let dirname = __dirname.replace('\\routers','')
+//               let path = dirname + "/allFiles/" + hashname;// 待下载文件的路径
+//               resolve({'code': 200,'msg':'查询成功!','path':path,'name':name,'hash_name':hashname})
+//             }
+//           })
+//         })
+//         c.release();
+//       }
+//     })
+//   })
+// }
 
 module.exports = {
   fileUpload,

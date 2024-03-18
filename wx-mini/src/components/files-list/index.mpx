@@ -1,6 +1,6 @@
 <template>
   <view wx:if="{{listdata.length > 0}}" class="page">
-    <view wx:for="{{listdata}}" wx:key="id" class="item" bindtap="toDetail(item.id)">
+    <view wx:for="{{listdata}}" wx:key="id" class="item" bindtap="toDetail(item)">
       <view class="left">
       <van-image width="30" height="30" src="{{item.icon}}" />
     </view>
@@ -35,9 +35,9 @@
         console.log(props);
       })
 
-      const toDetail = id => {
+      const toDetail = item => {
         mpx.navigateTo({
-          url: `/package/pages/file/details?id=${id}`
+          url: `/package/pages/file/details?query=${JSON.stringify(item)}`
         })
       }
       return {

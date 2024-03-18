@@ -1,0 +1,84 @@
+<template>
+  <view>
+    <view wx:if="{{list.length > 0}}">
+      <view class="content" wx:for="{{list}}" wx:key="item.id">
+        <van-cell-group inset>
+          <van-cell title="反馈时间" value="{{item.thisTime}}" />
+          <van-cell title="反馈内容" value="{{item.content}}" />
+          <van-cell title="反馈状态" value="{{item.statusText}}" />
+          <van-cell title="反馈结果" wx:if="{{item.status != '0'}}" value="{{item.result}}" />
+        </van-cell-group>
+      </view>
+    </view>
+    <view wx:else class="tip"> -- 暂无数据 --</view>
+    <view class="add-btn" bindtap="toAdd">
+      <van-icon name="add" size="80" color="#3AB1EF"/>
+    </view>
+  </view>
+</template>
+
+<script>
+  import mpx, { createPage, ref, onShow } from '@mpxjs/core'
+  import { api, request } from '@/service'
+  import dayjs from 'dayjs'
+
+  createPage({
+    setup() {
+      const list = ref([])
+
+      const statusMap = ['等待处理', '正在处理', '处理完成']
+
+      const getList = async () => {
+        const res = await request({
+          url: `${api.baseUrl}/getFeedback`,
+          data: {
+            userid: mpx.getStorageSync('user').id
+          }
+        })
+        list.value = (res.data.data || []).map(item => ({
+          ...item,
+          statusText: statusMap[+item.status],
+          thisTime: dayjs(item.thisTime).format('YYYY-MM-DD HH:mm:ss')
+        }))
+      }
+
+      const toAdd = () => {
+        mpx.navigateTo({
+          url: './add'
+        })
+      }
+
+      onShow(() => {
+        getList()
+      })
+      return {
+        list,
+        toAdd
+      }
+    }
+  })
+</script>
+
+<style lang="stylus">
+.content
+  margin 12px 0
+.tip
+  width 100%
+  margin-top 50px
+  text-align center
+.add-btn
+  position fixed
+  bottom 50px
+  right 20px
+</style>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "问题反馈",
+    "usingComponents": {
+      "van-cell": "@vant/weapp/cell/index",
+      "van-cell-group": "@vant/weapp/cell-group/index",
+      "van-icon": "@vant/weapp/icon/index"
+    }
+  }
+</script>

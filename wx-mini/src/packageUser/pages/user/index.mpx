@@ -48,17 +48,17 @@
       const user = mpx.getStorageSync("user")
 
       const functionalList = [
-        { title: '设置', link: '/packageRMS/pages/user/newstore' },
-        { title: '客服中心', link: '/packageRMS/pages/user/mystore' },
-        { title: '更多服务', link: '/packageRMS/pages/user/changestore' },
-        { title: '问题反馈', link: 'customerservice' },
+        { title: '设置', link: '/package/pages/options/index' },
+        { title: '客服中心', link: 'customerservice' },
+        // { title: '更多服务', link: '/packageRMS/pages/user/changestore' },
+        { title: '问题反馈', link: '/package/pages/feedback/index' },
         { title: '退出登录', link: 'loginout' }
       ]
       const addList = [
         { title: '我的收藏', icon: 'star', color: '#1296db', link: '/packageRMS/pages/sacn_sign/dist' },
         { title: '回收站', icon: 'delete', color: '#1296db', link: '/packageRMS/pages/place_order/index' },
-        { title: '我的订单', icon: 'bill', color: '#1296db', link: '/packageRMS/pages/order/list' },
-        { title: '个人信息', icon: 'user', color: '#1296db', link: '/packageRMS/pages/protocol_manage/index' }
+        // { title: '我的订单', icon: 'bill', color: '#1296db', link: '/packageRMS/pages/order/list' },
+        { title: '个人信息', icon: 'user', color: '#1296db', link: '/packageUser/pages/info/index' }
       ]
 
       const jump = (url, isReLaunch = false) => {
@@ -66,7 +66,7 @@
           wx.makePhoneCall({
             phoneNumber: '40012341234'
           })
-        } else if (url = 'loginout'){
+        } else if (url == 'loginout'){
           loginOut()
         } else {
           utils.jump(url, isReLaunch)

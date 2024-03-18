@@ -259,9 +259,9 @@ export default {
         }
     },  
     created: function () {
-        this.$http.get("/admin/seat/show").then((Response) => {
-            this.tableData = Response.data.data
-        })
+        // this.$http.get("/admin/seat/show").then((Response) => {
+        //     this.tableData = Response.data.data
+        // })
 
     },
 

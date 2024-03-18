@@ -6,6 +6,7 @@ const Multer = require("multer");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const router = require('./routers')
+const managerouter = require('./managerouters')
 
 const server = express();
 server.use(cors()); // 使用cors中间件解决跨域问题
@@ -21,6 +22,7 @@ server.listen(3000, () => {
 server.use(Multer({ dest: "./allFiles" }).any());
 // server.use("/login", loginRouter);
 server.use(router)
+server.use(managerouter)
 
 //测试
 loginRouter.use("/test", (req, res) => {

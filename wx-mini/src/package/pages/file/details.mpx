@@ -3,14 +3,14 @@
     <view class="content">
       <view class="top">
         <van-image width="100" height="100" src="{{pageInfo.icon}}" />
-        <view class="text">{{pageInfo.title}}</view>
-        <view class="text">{{pageInfo.time}} {{pageInfo.size}}</view>
+        <view class="text">{{pageInfo.file_name}}</view>
+        <view class="text">{{pageInfo.last_time}} {{pageInfo.formatSize}}</view>
       </view>
       <view class="bottom">
-        <view class="download-btn">下载文件</view>
+        <view class="download-btn" bindtap="downloadFile">下载文件</view>
         <view class="del-view-btn">
-          <view class="del-btn">删除文件</view>
-          <view class="view-btn">预览文件</view>
+          <view class="del-btn" bindtap="deleteFile">删除文件</view>
+          <view class="view-btn" bindtap="previewFile">预览文件</view>
         </view>
       </view>
     </view>
@@ -22,21 +22,91 @@
   import { api, request, tabbar } from '@/service'
   import { useSetupStore } from '@/store'
   import dayjs from 'dayjs'
+  import { checkType } from '@/utils'
   createPage({
     setup(){
       const pageInfo = ref({})
 
-      const getData = () => {
-        pageInfo.value = {title: "file 1", size: "500KB", type: "pdf", time: "2024-3-4", icon: "https://img.yzcdn.cn/vant/cat.jpeg"}
+      const downloadFile = () => {
+        wx.downloadFile({
+          url: `${api.baseUrl}/downFile/${pageInfo.value.hash_name}`,
+          filePath: wx.env.USER_DATA_PATH + '/' + pageInfo.value.file_name,
+          success: async function (res) {
+            console.log(res);
+            let filePath = res.filePath
+            let ext = filePath.split('.').at(-1)
+            if(['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'mp4', 'm2v', 'mkv'].includes(ext)) {
+              wx.saveImageToPhotosAlbum({
+                filePath: filePath,
+                success: () => {
+                  wx.showToast({
+                    title: '已下载至系统相册',
+                    icon: 'success'
+                  })
+                }
+              })
+            } else {
+              await new Promise((r, j) => {
+                wx.showModal({
+                  title: "重要提示",
+                  content: "打开文件后，请点右上角保存到手机或转发",
+                  confirmText: "知道了",
+                  showCancel: false,
+                  success(res) {
+                    if (res.confirm) {
+                      r();
+                    } else if (res.cancel) {
+                      j();
+                    }
+                  }
+                });
+              });
+              wx.openDocument({ // 打开
+                filePath: filePath,
+                success: function (res) {}
+              })
+            }
+          }
+        })
+      }
+      const deleteFile = () => {}
+      const previewFile = () => {
+        wx.downloadFile({
+          url: `${api.baseUrl}/downFile/${pageInfo.value.hash_name}`,
+          filePath: wx.env.USER_DATA_PATH + '/' + pageInfo.value.file_name,
+          success: function (res) {
+            console.log(res);
+            let filePath = res.filePath
+            let ext = filePath.split('.').at(-1)
+            if(['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'mp4', 'm2v', 'mkv'].includes(ext)) {
+              wx.previewMedia({
+                sources: [{
+                  url: filePath,
+                  type: checkType(ext)
+                }],
+                success: () => {}
+              })
+            } else {
+              wx.openDocument({ // 打开
+                filePath: filePath,
+                success: function (res) {}
+              })
+            }
+          }
+        })
       }
 
+
       onLoad((options) => {
-        console.log(options);
-        getData();
+        pageInfo.value = JSON.parse(options.query)
+        console.log(pageInfo.value);
       })
 
       return {
-        pageInfo
+        pageInfo,
+        downloadFile,
+        deleteFile,
+        previewFile
       }
     }
   })

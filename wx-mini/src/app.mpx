@@ -50,14 +50,17 @@ createApp({
         "pages": [
           "./pages/file/details",
           "./pages/file/index",
-          "./pages/vip/index"
+          "./pages/vip/index",
+          "./pages/feedback/index",
+          "./pages/feedback/add",
+          "./pages/options/index"
         ]
       },
       {
         "root": "packageUser",
         "pages": [
           "./pages/user/index",
-          "./pages/info/info"
+          "./pages/info/index"
         ]
       }
     ],

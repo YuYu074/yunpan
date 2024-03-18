@@ -1,4 +1,5 @@
 const HOST = 'http://127.0.0.1:3000'
+// const HOST = 'http://192.168.31.76:3000'
 // console.log(process.env)
 const api = {
   baseUrl: `${HOST}`,

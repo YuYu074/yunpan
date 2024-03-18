@@ -1,0 +1,119 @@
+<template>
+  <view class="page">
+    <view class="content" style="padding: 12px">
+      <view class="title"><text style="color: #cc2525">*</text>反馈内容</view>
+      <textarea class="textarea" value="{{remark}}" bindinput="onRemarkInput" placeholder="请输入反馈内容"></textarea>
+    </view>
+    <view class="bottom">
+      <view class="btn-group">
+        <view class="cancel-btn" bindtap="onCancel">取消</view>
+        <view class="confirm-btn" bindtap="onSubmit">提交</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import mpx, { createPage, ref, onLoad, onMounted, getCurrentInstance } from '@mpxjs/core'
+  import { api, request } from '@/service'
+  import groupBy from "lodash-es/groupBy"
+
+  createPage({
+    setup() {
+      const remark = ref('')
+      const onRemarkInput = e => {
+        remark.value = e.detail.value
+      }
+
+      const onSubmit = () => {
+        if(!remark.value) {
+          mpx.showToast({
+            title: '请输入反馈内容',
+            icon: 'none'
+          })
+        }
+        mpx.showLoading()
+        request({
+          url: `${api.baseUrl}/addFeedback`,
+          data: {
+            userid: mpx.getStorageSync("user").id,
+            content: remark.value
+          }
+        }).then(res => {
+          mpx.showToast({
+            title: '提交成功',
+            duration: 1200
+          })
+        }).finally(() => {
+          setTimeout(() => {
+            mpx.hideLoading()
+            mpx.navigateBack({
+              delta: 1
+            })
+          }, 1000)
+        })
+      }
+      const onCancel = () => {
+        mpx.navigateBack({
+          delta: 1
+        })
+      }
+
+      return {
+        onRemarkInput,
+        remark,
+        onSubmit,
+        onCancel
+      }
+    }
+  })
+</script>
+
+<style lang="stylus">
+  .page
+    height 99vh
+    background-color #f4f6f8
+    .content
+      margin 12px 12px 0
+      padding-bottom 8px
+      border-radius 12rpx
+      background-color #fff
+      .title
+        padding 12px 0
+      .textarea
+        width calc(100% - 24px)
+        height 200rpx
+        background-color #f4f6f8
+        padding 12px
+        border-radius 12px
+    .bottom
+      width 100%
+      // position fixed
+      // bottom 0
+      background-color #fff
+      .btn-group
+        margin 12px
+        padding 20px 12px
+        display flex
+        justify-content space-around
+        view
+          width 300rpx
+          height 100rpx
+          display flex
+          justify-content center
+          align-items center
+          border-radius 10px
+        .cancel-btn
+          color #888
+          border 1px solid #333
+        .confirm-btn
+          color #fff
+          background-color #118CCC
+</style>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "问题反馈",
+    "usingComponents": {}
+  }
+</script>

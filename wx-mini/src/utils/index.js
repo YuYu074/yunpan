@@ -18,10 +18,11 @@ function formatSize (size) {
 
 /**
  * @description 文件类型校验
- * @param {String} ext 文件后缀名
+ * @param {String} str 文件后缀名/文件名
  * @returns {String} String
  */
-function checkType (ext) {
+function checkType (str) {
+  let ext = str.split('.').at(-1)
   const imageList = ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp']
   const videoList = ['mp4', 'm2v', 'mkv']
   const radioList = ['mp3', 'wav', 'wmv']

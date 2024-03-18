@@ -70,10 +70,10 @@
       <view class="title">
         最近文件
       </view>
-      <view class="content" wx:for="{{lastFileList}}" wx:key="item.id">
-        <!-- <view class="left">
-          <van-image width="30" height="30" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-        </view> -->
+      <view class="content" wx:for="{{lastFileList}}" wx:key="item.id" bindtap="toDetail(item)">
+        <view class="left">
+          <van-image width="30" height="30" src="{{item.icon}}" />
+        </view>
         <view class="right">
           <view class="name">{{item.show_name}}</view>
           <view class="info">
@@ -94,6 +94,18 @@
   import { formatSize } from '@/utils'
   import dayjs from 'dayjs'
   import Dialog from '@vant/weapp/dialog/dialog'
+
+  import imageIcon from '@/asset/fileIcon/image@2x.png'
+  import videoIcon from '@/asset/fileIcon/video@2x.png'
+  import radioIcon from '@/asset/fileIcon/music@2x.png'
+  import compressIcon from '@/asset/fileIcon/image@2x.png'
+  import wordIcon from '@/asset/fileIcon/word@2x.png'
+  import excelIcon from '@/asset/fileIcon/excel@2x.png'
+  import pptIcon from '@/asset/fileIcon/ppt@2x.png'
+  import pdfIcon from '@/asset/fileIcon/pdf@2x.png'
+  import txtIcon from '@/asset/fileIcon/txt@2x.png'
+  import exeIcon from '@/asset/fileIcon/image@2x.png'
+  import otherIcon from '@/asset/fileIcon/common@2x.png'
   
   createComponent({
     setup() {
@@ -147,6 +159,19 @@
       }
 
       //查询最近文件
+      const iconList = {
+        image: imageIcon,
+        video: videoIcon,
+        radio: radioIcon,
+        compress: compressIcon,
+        word: wordIcon,
+        excel: excelIcon,
+        ppt: pptIcon,
+        pdf: pdfIcon,
+        txt: txtIcon,
+        exe: exeIcon,
+        other: otherIcon
+      }
       const lastFileList = ref([])
       const getLastFileList = async () => {
         let res = await request({
@@ -157,9 +182,16 @@
         })
         lastFileList.value = res.data.data.map(i => ({
           ...i,
-          formatSize: formatSize(+i.size)
+          formatSize: formatSize(+i.size),
+          icon: iconList[i.type]
         }))
         console.log(lastFileList.value);
+      }
+
+      const toDetail = item => {
+        mpx.navigateTo({
+          url: `/package/pages/file/details?query=${JSON.stringify(item)}`
+        })
       }
 
       const jump = (url, isReLaunch = false) => {
@@ -202,7 +234,8 @@
         jumpBar,
         toFiles,
         lastFileList,
-        refresh
+        refresh,
+        toDetail
 			}
 		}
   })
