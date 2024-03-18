@@ -47,6 +47,7 @@ export async function initUserAndPermissions() {
     return
   }
   const [user, permissions] = await Promise.all([getUserInfo(), getPermissions()])
+  console.log(user, permissions)
   userStore.setUser(user)
   permissionStore.setPermissions(permissions)
   const routeComponents = import.meta.glob('@/views/**/*.vue')

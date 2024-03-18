@@ -23,38 +23,20 @@
         <p class="mt-28 text-14 opacity-60">一个人几乎可以在任何他怀有无限热忱的事情上成功。</p>
         <p class="mt-12 text-right text-12 opacity-40">—— 查尔斯·史考伯</p>
       </n-card>
-      <n-card class="ml-12 w-70%" title="✨ 欢迎使用 Vue Naive Admin 2.0">
-        <template #header-extra>
-          <a
-            class="text-14 text-primary text-highlight hover:underline hover:opacity-80"
-            href="https://isme.top"
-            target="_blank"
-            @click.prevent="message?.info('官网正在火速开发中...')"
-          >
-            isme.top
-          </a>
-        </template>
+      <n-card class="ml-12 w-70%" title="✨ 欢迎使用 小鱼网盘后台管理系统V2.0">
 
         <p class="opacity-60">
-          这是一款极简风格的后台管理模板，包含前后端解决方案，前端使用 Vite + Vue3 + Pinia +
-          Unocss，后端使用 Nestjs + TypeOrm +
-          MySql，简单易用，赏心悦目，历经十几次重构和细节打磨，诚意满满！！
+          欢迎使用我的个人网盘系统，这是一款专为个人用户打造的云端存储与分享解决方案。
+        </p>
+        <p class="opacity-60">
+          小鱼网盘系统致力于为用户提供安全、高效、便捷的文件存储与共享体验。
         </p>
         <footer class="mt-12 flex items-center justify-end">
           <n-button
             type="primary"
-            ghost
-            tag="a"
-            href="https://docs.isme.top/web/#/624306705/188522224"
-            target="__blank"
-          >
-            开发文档
-          </n-button>
-          <n-button
-            type="primary"
             class="ml-12"
             tag="a"
-            href="https://github.com/zclzone/vue-naive-admin/tree/2.x"
+            href="https://gitee.com/yu-yang686/yunpan"
             target="__blank"
           >
             代码仓库
@@ -63,81 +45,47 @@
       </n-card>
     </div>
     <div class="mt-12 flex">
-      <n-card class="w-50%" title="💯 特性" segmented>
-        <template #header-extra>
+      <n-card class="w-50%" title="💯 我们的优势" segmented>
+        <!-- <template #header-extra>
           <span class="opacity-90 text-highlight">👏 历经十几次重构和细节打磨</span>
-        </template>
+        </template> -->
 
         <ul class="opacity-90">
           <li class="py-4">
-            🆒 使用
-            <b>Vue3</b>
-            主流技术栈:
-            <span class="text-highlight">Vite + Vue3 + Pinia</span>
+            🍇 
+            <b>海量存储</b>
+            : 提供大容量的云存储空间，满足您日益增长的存储需求。
           </li>
           <li class="py-4">
-            🍇 使用
-            <b>原子CSS</b>
-            框架:
-            <span class="text-highlight">Unocss</span>
-            ，优雅、轻量、易用
+            🍇 
+            <b>高速上传下载</b>
+            : 采用先进的网络传输技术，确保文件上传和下载的高速稳定。
           </li>
           <li class="py-4">
-            🤹 使用主流的
-            <span class="text-highlight">iconify + unocss</span>
-            图标方案，支持自定义图标，支持动态渲染
+            🍇 
+            <b>文件管理与分类</b>
+            : 支持文件夹创建、文件移动、重命名等操作，方便您轻松管理自己的文件。
           </li>
           <li class="py-4">
-            🎨 使用 Naive UI，
-            <span class="text-highlight">极致简洁的代码风格和清爽的页面设计</span>
-            ，审美在线，主题轻松定制
+            🍇 
+            <b>安全保障</b>
+            : 采用多重加密技术，确保用户数据的安全与隐私。同时，提供定期备份和恢复功能，防止数据丢失。
           </li>
           <li class="py-4">
-            👏 先进且易于理解的文件结构设计，多个模块之间
-            <b>零耦合</b>
-            ，单个业务模块删除不影响其他模块
+            🍇 
+            <b>简单易用</b>
+            : 界面简洁明了，操作便捷，无需复杂设置即可轻松上手。
           </li>
           <li class="py-4">
-            🚀
-            <span class="text-highlight">扁平化路由</span>
-            设计，每一个组件都可以是一个页面，告别多级路由 KeepAlive 难实现问题
-          </li>
-
-          <li class="py-4">
-            🍒
-            <span class="text-highlight">基于权限动态生成路由</span>
-            ，无需额外定义路由，
-            <span class="text-highlight">403和404可区分</span>
-            ，而不是无权限也跳404
-          </li>
-          <li class="py-4">
-            🔐 基于Redis集成
-            <span class="text-highlight">无感刷新</span>
-            ，用户登录态可控，安全与体验缺一不可
-          </li>
-          <li class="py-4">
-            ✨ 基于 Naive UI 封装
-            <span class="text-highlight">message</span>
-            全局工具方法，支持批量提醒，支持跨页面共享实例
-          </li>
-          <li class="py-4">
-            ⚡️ 基于 Naive UI 封装常用的业务组件，包含
-            <span class="text-highlight">Page</span>
-            组件、
-            <span class="text-highlight">CRUD</span>
-            表格组件及
-            <span class="text-highlight">Modal</span>
-            组件，减少大量重复性工作
+            🍇 
+            <b>免费试用与升级</b>
+            : 提供免费试用版本，让您体验我们的网盘系统。同时，提供多种付费升级选项，满足您不同层次的存储需求。
           </li>
         </ul>
 
         <n-divider class="mb-0! mt-12!">
           <p class="text-14 opacity-60">
-            👉点击
-            <b class="mx-2 transition hover:text-primary">
-              <a href="https://isme.top" target="_blank">更多</a>
-            </b>
-            查看更多实用功能，持续开发中...
+            👉 更多实用功能，持续开发中...
           </p>
         </n-divider>
       </n-card>
@@ -147,7 +95,7 @@
       </n-card>
     </div>
 
-    <n-card class="mt-12" title="⚡️ 趋势" segmented>
+    <n-card class="mt-12" title="⚡️ 用户趋势" segmented>
       <VChart :option="trendOption" :init-options="{ height: 400 }" autoresize />
     </n-card>
   </AppPage>
@@ -187,7 +135,7 @@ const trendOption = {
   },
   legend: {
     top: '5%',
-    data: ['star', 'fork'],
+    data: ['user'],
   },
   xAxis: [
     {
@@ -202,15 +150,6 @@ const trendOption = {
     {
       type: 'value',
       min: 0,
-      max: 3000,
-      interval: 500,
-      axisLabel: {
-        formatter: '{value}',
-      },
-    },
-    {
-      type: 'value',
-      min: 0,
       max: 500,
       interval: 100,
       axisLabel: {
@@ -220,15 +159,10 @@ const trendOption = {
   ],
   series: [
     {
-      name: 'star',
-      type: 'line',
-      data: [200, 320, 520, 550, 600, 805, 888, 950, 1300, 2503, 2702, 2712],
-    },
-    {
-      name: 'fork',
-      yAxisIndex: 1,
+      name: 'user',
+      yAxisIndex: 0,
       type: 'bar',
-      data: [40, 72, 110, 115, 121, 175, 180, 201, 260, 398, 423, 455],
+      data: [40, 72, 110, 115, 121, 175, 180, 201, 260, 398, 423, 455]
     },
   ],
 }

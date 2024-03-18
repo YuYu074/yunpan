@@ -10,10 +10,10 @@ export const defaultLayout = 'normal'
 
 export const naiveThemeOverrides = {
   common: {
-    primaryColor: '#316C72FF',
-    primaryColorHover: '#316C72E3',
-    primaryColorPressed: '#2B4C59FF',
-    primaryColorSuppl: '#316C72E3',
+    primaryColor: '#3AB1EF',
+    primaryColorHover: '#22A8ED',
+    primaryColorPressed: '#129CE4',
+    primaryColorSuppl: '#118CCC',
 
     infoColor: '#2080F0FF',
     infoColorHover: '#4098FCFF',

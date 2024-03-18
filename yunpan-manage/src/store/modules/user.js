@@ -23,7 +23,10 @@ export const useUserStore = defineStore('user', {
       return this.userInfo?.nickName
     },
     avatar() {
-      return this.userInfo?.avatar
+      return (
+        this.userInfo?.avatar ||
+        'https://tse3-mm.cn.bing.net/th/id/OIP-C.yp-D-KHI3e2nN4eMBJcEVAAAAA?w=184&h=184&c=7&r=0&o=5&dpr=1.3&pid=1.7'
+      )
     },
     currentRole() {
       return this.userInfo?.currentRole || {}

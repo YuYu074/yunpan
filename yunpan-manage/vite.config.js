@@ -19,7 +19,7 @@ import { pluginPagePathes, pluginIcons } from './build/plugin-isme'
 export default defineConfig(({ command, mode }) => {
   const isBuild = command === 'build'
   const viteEnv = loadEnv(mode, process.cwd())
-  const { VITE_TITLE, VITE_PUBLIC_PATH, VITE_PROXY_TARGET } = viteEnv
+  const { VITE_TITLE, VITE_PUBLIC_PATH } = viteEnv
 
   return {
     base: VITE_PUBLIC_PATH || '/',
@@ -58,10 +58,11 @@ export default defineConfig(({ command, mode }) => {
       port: 3200,
       open: false,
       proxy: {
-        '/api': {
-          target: VITE_PROXY_TARGET,
+        '/manage': {
+          target: 'http://127.0.0.1:3000',
+          // target: 'https://mock.apifox.com/m1/3776410-0-default/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(new RegExp('^/api'), ''),
+          // rewrite: (path) => path.replace(new RegExp('^/manage'), ''),
           secure: false,
           configure: (proxy, options) => {
             // 配置此项可在响应头中看到请求的真实地址

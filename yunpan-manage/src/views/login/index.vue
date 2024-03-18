@@ -17,7 +17,7 @@
 
       <div class="w-320 flex-col px-20 py-32">
         <h2 class="f-c-c text-24 text-#6a6a6a font-normal">
-          <img src="@/assets/images/logo.png" class="mr-12 h-50" />
+          <img src="@/assets/images/logo2.png" class="mr-12 h-50" />
           {{ title }}
         </h2>
         <n-input
@@ -45,7 +45,7 @@
           </template>
         </n-input>
 
-        <div class="mt-20 flex items-center">
+        <!-- <div class="mt-20 flex items-center">
           <n-input
             v-model:value="loginInfo.captcha"
             class="h-40 items-center"
@@ -65,7 +65,7 @@
             class="ml-12 w-80 cursor-pointer"
             @click="initCaptcha"
           />
-        </div>
+        </div> -->
 
         <n-checkbox
           class="mt-20"
@@ -110,7 +110,7 @@ import { initUserAndPermissions } from '@/router'
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
-const title = import.meta.env.VITE_TITLE
+const title = '小 鱼 网 盘'
 
 const loginInfo = ref({
   username: '',
@@ -130,7 +130,7 @@ if (localLoginInfo) {
 initCaptcha()
 
 function quickLogin() {
-  loginInfo.value.username = 'admin'
+  loginInfo.value.username = '13208112801'
   loginInfo.value.password = '123456'
   handleLogin(true)
 }
@@ -138,13 +138,12 @@ function quickLogin() {
 const isRemember = useStorage('isRemember', true)
 const loading = ref(false)
 async function handleLogin(isQuick) {
-  const { username, password, captcha } = loginInfo.value
+  const { username, password } = loginInfo.value
   if (!username || !password) return $message.warning('请输入用户名和密码')
-  if (!isQuick && !captcha) return $message.warning('请输入验证码')
   try {
     loading.value = true
     $message.loading('正在验证，请稍后...', { key: 'login' })
-    const { data } = await api.login({ username, password: password.toString(), captcha, isQuick })
+    const { data } = await api.login({ username, password: password.toString(), isQuick })
     if (isRemember.value) {
       lStorage.set('loginInfo', { username, password })
     } else {
@@ -164,6 +163,7 @@ async function handleLogin(isQuick) {
 }
 
 async function onLoginSuccess(data = {}) {
+  // data里面存token的字段为accessToken，在pinia里解构
   authStore.setToken(data)
   $message.loading('登录中...', { key: 'login' })
   try {
