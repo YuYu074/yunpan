@@ -31,7 +31,7 @@ export async function setupRouter(app) {
   app.use(router)
 }
 
-export async function initUserAndPermissions() {
+export async function initUserAndPermissions(account) {
   const permissionStore = usePermissionStore()
   const userStore = useUserStore()
   const authStore = useAuthStore()
@@ -46,7 +46,11 @@ export async function initUserAndPermissions() {
     }
     return
   }
-  const [user, permissions] = await Promise.all([getUserInfo(), getPermissions()])
+  if (!account) {
+    let loginInfo = JSON.parse(localStorage.getItem('logininfo'))
+    account = loginInfo.value?.username
+  }
+  const [user, permissions] = await Promise.all([getUserInfo(account), getPermissions(account)])
   console.log(user, permissions)
   userStore.setUser(user)
   permissionStore.setPermissions(permissions)

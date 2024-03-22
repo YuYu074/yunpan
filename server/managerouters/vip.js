@@ -8,27 +8,21 @@ const Pool = mysql.createPool({
 });
 
 /**
- * @description Query user storage space
- * @param {String} userid
+ * @description getPriceData
+ * @param {String} vip_name
  * @returns {Promise} Promise
  */
-function getAllSpace(userid) {
+function getPriceData(vip_name) {
   return new Promise((resolve, reject) => {
     Pool.getConnection((err, c) => {
       if (err) {
-        reject({ 'code': 500, 'msg': "数据库连接失败" });
+        reject({ 'code': 500, 'message': "数据库连接失败" });
       } else {
-        c.query('SELECT vip_id, used_space FROM `user` WHERE id="' + userid + '";',(err,data)=>{
+        c.query('SELECT * FROM `viptab` WHERE vip_name="' + vip_name + '";',(err,data)=>{
           if(err){
-            reject({'code': 500,'msg':'数据库连接失败'});
+            reject({'code': 500,'message':'数据库连接失败'});
           }else{
-            c.query('SELECT vip_space FROM `viptab` WHERE id="' + data[0].vip_id + '";',(err2,data2)=>{
-              if(err){
-                reject({'code': 500,'msg':'数据库连接失败'});
-              }else{
-                resolve({'code': 200,'msg':'查询成功','data':{...data[0], ...data2[0]}});
-              }
-            })
+            resolve({'code': 200,'message':'查询成功','data':data[0]});
           }
           c.release();
         });
@@ -38,21 +32,20 @@ function getAllSpace(userid) {
 }
 
 /**
- * @description getPriceData
- * @param {String} vip_name
+ * @description getAllVip
  * @returns {Promise} Promise
  */
-function getPriceData(vip_name) {
+function getAllVip() {
   return new Promise((resolve, reject) => {
     Pool.getConnection((err, c) => {
       if (err) {
         reject({ 'code': 500, 'msg': "数据库连接失败" });
       } else {
-        c.query('SELECT * FROM `viptab` WHERE vip_name="' + vip_name + '";',(err,data)=>{
+        c.query('SELECT * FROM `roles`;',(err,data)=>{
           if(err){
             reject({'code': 500,'msg':'数据库连接失败'});
           }else{
-            resolve({'code': 200,'msg':'查询成功','data':data[0]});
+            resolve({'code': 200,'msg':'查询成功','data':data});
           }
           c.release();
         });
@@ -62,6 +55,6 @@ function getPriceData(vip_name) {
 }
 
 module.exports = {
-  getAllSpace,
-  getPriceData
+  getPriceData,
+  getAllVip
 }

@@ -164,10 +164,11 @@ async function handleLogin(isQuick) {
 
 async function onLoginSuccess(data = {}) {
   // data里面存token的字段为accessToken，在pinia里解构
+  console.log('---------------', data);
   authStore.setToken(data)
   $message.loading('登录中...', { key: 'login' })
   try {
-    await initUserAndPermissions()
+    await initUserAndPermissions(data.user_phone)
     $message.success('登录成功', { key: 'login' })
     if (route.query.redirect) {
       const path = route.query.redirect

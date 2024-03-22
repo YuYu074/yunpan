@@ -21,7 +21,7 @@
 
 <script setup>
 import { useAppStore } from '@/store'
-const title = import.meta.env.VITE_TITLE
+const title = '网盘后台管理系统'
 
 const appStore = useAppStore()
 </script>

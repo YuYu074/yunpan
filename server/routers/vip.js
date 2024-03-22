@@ -12,6 +12,30 @@ const Pool = mysql.createPool({
  * @param {String} userid
  * @returns {Promise} Promise
  */
+function getAllVip() {
+  return new Promise((resolve, reject) => {
+    Pool.getConnection((err, c) => {
+      if (err) {
+        reject({ 'code': 500, 'msg': "数据库连接失败" });
+      } else {
+        c.query('SELECT * FROM `viptab`;',(err,data)=>{
+          if(err){
+            reject({'code': 500,'msg':'数据库连接失败'});
+          }else{
+            resolve({'code': 200,'msg':'查询成功','data':data});
+          }
+          c.release();
+        });
+      }
+    });
+  })
+}
+
+/**
+ * @description Query user storage space
+ * @param {String} userid
+ * @returns {Promise} Promise
+ */
 function getAllSpace(userid) {
   return new Promise((resolve, reject) => {
     Pool.getConnection((err, c) => {
@@ -63,5 +87,6 @@ function getPriceData(vip_name) {
 
 module.exports = {
   getAllSpace,
-  getPriceData
+  getPriceData,
+  getAllVip
 }

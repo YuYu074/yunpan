@@ -10,5 +10,5 @@ import { request } from '@/utils'
 
 export default {
   login: (data) => request.post('/login', data, { noNeedToken: true }),
-  getUser: () => request.get('/user/detail'),
+  getUser: (account) => request.get(`/user/detail?username=${account}`),
 }

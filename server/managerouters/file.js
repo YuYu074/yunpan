@@ -23,11 +23,11 @@ function fileUpload(files, userid) {
     let thisTime = new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString();
     fs.rename(files.path, newName ,(err)=>{
       if(err){
-        reject({ 'code': 500, 'msg': "文件资源存在问题，无法上传" });
+        reject({ 'code': 500, 'message': "文件资源存在问题，无法上传" });
       }else{
         Pool.getConnection((err, c) => {
           if (err) {
-            reject({ 'code': 500, 'msg': "数据库连接失败" });
+            reject({ 'code': 500, 'message': "数据库连接失败" });
           } else {
             // 查询是否有同名文件
             c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
@@ -46,13 +46,13 @@ function fileUpload(files, userid) {
                 let inputSql2 = `INSERT INTO \`allfiles\` (user_id, file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${userid}", "${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0");`
                 c.query(inputSql1, (err3, data3)=>{
                   if(err) {
-                    reject({ 'code': 500, 'msg': "数据库连接失败" });
+                    reject({ 'code': 500, 'message': "数据库连接失败" });
                   } else {
                     c.query(inputSql2, (err4, data4)=>{
                       if(err) {
-                        reject({ 'code': 500, 'msg': "数据库连接失败" });
+                        reject({ 'code': 500, 'message': "数据库连接失败" });
                       } else {
-                        resolve({'code': 200,'msg':'上传成功！'})
+                        resolve({'code': 200,'message':'上传成功！'})
                       }
                     })
                   }
@@ -80,13 +80,13 @@ function getFileList(key, userid, type, sort) {
     console.log(key, userid);
     Pool.getConnection((err, c)=>{
       if(err) {
-        reject({ 'code': 500, 'msg': "数据库连接失败" });
+        reject({ 'code': 500, 'message': "数据库连接失败" });
       } else {
         c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
           console.log(data[0].user_name);
           !err & c.query('SELECT * FROM `' + data[0].user_name + '`;', (err2, data2)=>{
             if(err) {
-              reject({ 'code': 500, 'msg': "数据库连接失败" });
+              reject({ 'code': 500, 'message': "数据库连接失败" });
             } else {
               let result = [...data2]
               // 按类型筛选
@@ -124,7 +124,7 @@ function getFileList(key, userid, type, sort) {
                   return 0;
                 })
               }
-              resolve({'code': 200,'msg':'查询成功!','data':result})
+              resolve({'code': 200,'message':'查询成功!','data':result})
             }
           })
         })
@@ -143,12 +143,12 @@ function getLastFileList(userid) {
   return new Promise((resolve, reject) => {
     Pool.getConnection((err, c)=>{
       if(err) {
-        reject({ 'code': 500, 'msg': "数据库连接失败" });
+        reject({ 'code': 500, 'message': "数据库连接失败" });
       } else {
         c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
           !err & c.query('SELECT * FROM `' + data[0].user_name + '`;', (err2, data2)=>{
             if(err) {
-              reject({ 'code': 500, 'msg': "数据库连接失败" });
+              reject({ 'code': 500, 'message': "数据库连接失败" });
             } else {
               // 按时间降序并取前10
                 data2.sort((a, b) => {
@@ -157,7 +157,7 @@ function getLastFileList(userid) {
                   return btime - atime
                 })
                 if(data2.length > 10) data2.splice(10)
-              resolve({'code': 200,'msg':'查询成功!','data':data2})
+              resolve({'code': 200,'message':'查询成功!','data':data2})
             }
           })
         })
@@ -176,18 +176,18 @@ function getLastFileList(userid) {
 //   return new Promise((resolve, reject) => {
 //     Pool.getConnection((err, c)=>{
 //       if(err) {
-//         reject({ 'code': 500, 'msg': "数据库连接失败" });
+//         reject({ 'code': 500, 'message': "数据库连接失败" });
 //       } else {
 //         c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
 //         !err & c.query('SELECT * FROM `' + data[0].user_name + '` WHERE id=' + id + ';', (err2, data2)=>{
 //             if(err) {
-//               reject({ 'code': 500, 'msg': "数据库连接失败" });
+//               reject({ 'code': 500, 'message': "数据库连接失败" });
 //             } else {
 //               let {file_name:name, hash_name:hashname} = data2[0];// 待下载的文件名
 //               console.log(__dirname);
 //               let dirname = __dirname.replace('\\routers','')
 //               let path = dirname + "/allFiles/" + hashname;// 待下载文件的路径
-//               resolve({'code': 200,'msg':'查询成功!','path':path,'name':name,'hash_name':hashname})
+//               resolve({'code': 200,'message':'查询成功!','path':path,'name':name,'hash_name':hashname})
 //             }
 //           })
 //         })

@@ -18,15 +18,15 @@ function addFeedback(userid, content) {
     Pool.getConnection((err, c) => {
       if (err) {
         console.log(err);
-        reject({ ok: 0, msg: "数据库连接失败" });
+        reject({ ok: 0, message: "数据库连接失败" });
       } else {
         const thisTime = new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString();
         c.query(`INSERT INTO \`feedback\` (user_id, content, feed_time, status, result) VALUES ("${userid}", "${content}", "${thisTime}", "0", "");`,(err,data)=>{
           if(err){
             console.log(err);
-            reject({'code': 500,'msg':'数据库链接失败'});
+            reject({'code': 500,'message':'数据库链接失败'});
           }else{
-            resolve({'code': 200,'msg':'提交成功'});
+            resolve({'code': 200,'message':'提交成功'});
           }
           c.release();
         });
@@ -45,14 +45,14 @@ function getFeedback(userid) {
     Pool.getConnection((err, c) => {
       if (err) {
         console.log(err);
-        reject({ ok: 0, msg: "数据库连接失败" });
+        reject({ ok: 0, message: "数据库连接失败" });
       } else {
         c.query(`SELECT * FROM \`feedback\` WHERE user_id=${userid};`,(err,data)=>{
           if(err){
             console.log(err);
-            reject({'code': 500,'msg':'数据库链接失败'});
+            reject({'code': 500,'message':'数据库链接失败'});
           }else{
-            resolve({'code': 200,'msg':'查询成功','data':data});
+            resolve({'code': 200,'message':'查询成功','data':data});
           }
           c.release();
         });
