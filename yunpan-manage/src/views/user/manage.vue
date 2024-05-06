@@ -117,7 +117,7 @@
         </n-form-item>
 
         <n-form-item
-          v-if="['add', 'setRole'].includes(modalAction) && [2,3,4].includes(+modalForm.roleIds)"
+          v-if="['add', 'setRole'].includes(modalAction) && [2, 3, 4].includes(+modalForm.roleIds)"
           label="会员到期时间"
           path="vip_ddl"
           :rule="{
@@ -125,7 +125,7 @@
             message: '请输入会员到期时间',
           }"
         >
-          <n-input v-model:value="modalForm.vip_ddl" placeholder="请输入(格式: YYYY-MM-DD)"/>
+          <n-input v-model:value="modalForm.vip_ddl" placeholder="请输入(格式: YYYY-MM-DD)" />
         </n-form-item>
 
         <n-form-item v-if="modalAction === 'add'" label="状态" path="enable">
@@ -187,7 +187,10 @@ const columns = [
     width: 150,
     ellipsis: { tooltip: true },
   },
-  { title: '邮箱', key: 'email', width: 150, ellipsis: { tooltip: true } },
+  { title: '会员到期时间', key: 'vip_ddl', width: 180, ellipsis: { tooltip: true }, render({ vip_ddl }) {
+      return vip_ddl ? dayjs(vip_ddl).format('YYYY-MM-DD HH:mm:ss') : "--"
+    }
+  },
   {
     title: '创建时间',
     key: 'user_signtime',

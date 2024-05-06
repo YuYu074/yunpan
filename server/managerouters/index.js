@@ -9,6 +9,7 @@ const { addFeedback, getFeedback } = require("./feedback");
 const {
   getUser,
   getPermissions,
+  getAllRoles,
   getAllUser,
   addUser,
   updateStatus,
@@ -46,6 +47,13 @@ managerouter
       (user) => res.status(200).send(user),
       (err) => res.status(500).send(err)
     );
+  })
+  .post("/manage/permissions/allRoles", (req, res) => {
+    console.log(res);
+    getAllRoles().then(
+      (roles) => res.status(200).send(roles),
+      (err) => res.status(500).send(err)
+    )
   })
   .post("/manage/fileUpload", (req, res) => {
     const files = {

@@ -2,6 +2,7 @@
 const mysql = require('mysql')
 const fs = require('fs');
 const path = require('path');
+const utils = require('../utils')
 
 const Pool = mysql.createPool({
   host: "47.120.37.146",
@@ -167,38 +168,77 @@ function getLastFileList(userid) {
   })
 }
 
-// /**
-//  * @description downFile
-//  * @param {String} userid
-//  * @returns {Promise} Promise
-//  */
-// function downFile(userid, id) {
-//   return new Promise((resolve, reject) => {
-//     Pool.getConnection((err, c)=>{
-//       if(err) {
-//         reject({ 'code': 500, 'msg': "数据库连接失败" });
-//       } else {
-//         c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
-//         !err & c.query('SELECT * FROM `' + data[0].user_name + '` WHERE id=' + id + ';', (err2, data2)=>{
-//             if(err) {
-//               reject({ 'code': 500, 'msg': "数据库连接失败" });
-//             } else {
-//               let {file_name:name, hash_name:hashname} = data2[0];// 待下载的文件名
-//               console.log(__dirname);
-//               let dirname = __dirname.replace('\\routers','')
-//               let path = dirname + "/allFiles/" + hashname;// 待下载文件的路径
-//               resolve({'code': 200,'msg':'查询成功!','path':path,'name':name,'hash_name':hashname})
-//             }
-//           })
-//         })
-//         c.release();
-//       }
-//     })
-//   })
-// }
+/**
+ * @description getDangerFiles
+ * @returns {Promise} Promise
+ */
+function getDangerFiles() {
+  return new Promise((resolve, reject) => {
+    Pool.getConnection((err, c)=>{
+      if(err) {
+        reject({ 'code': 500, 'msg': "数据库连接失败" });
+      } else {
+        c.query('SELECT * FROM `allfiles` INNER JOIN `user` ON allfiles.user_id = user.id WHERE allfiles.danger > 0;', (err, data)=>{
+          if(err) {
+            reject({ 'code': 500, 'msg': "数据库连接失败" });
+          } else {
+            data.forEach((i) => {
+              i.size = utils.formatSize(i.size)
+            })
+            resolve({'code': 200,'msg':'查询成功!','data':data})
+          }
+        })
+        c.release();
+      }
+    })
+  })
+}
+
+/**
+ * @description updateDangerFiles
+ * @param {object} params
+ * @returns {Promise} Promise
+ */
+function updateDangerFiles(params) {
+  return new Promise((resolve, reject) => {
+    Pool.getConnection((err, c)=>{
+      if(err) {
+        reject({ 'code': 500, 'msg': "数据库连接失败" });
+      } else {
+        let sql = ''
+        if(params.result == 0){
+          sql = `UPDATE \`allfiles\` SET danger=0 WHERE hash_name="${params.hash_name}";`
+        } else if (params.result == 1) {
+          sql = `DELETE FROM \`allfiles\` WHERE hash_name="${params.hash_name}";`
+        }
+        c.query(sql, (err, data)=>{
+          if(err) {
+            console.log(err);
+            reject({ 'code': 500, 'msg': "数据库连接失败!" });
+          } else {
+            if(params.result == 0) {
+              resolve({'code': 200,'msg':'修改成功!'})
+            } else if(params.result == 1) {
+              c.query(`DELETE FROM \`${params.user_name}\` WHERE hash_name="${params.hash_name}";`, (err2, data2) => {
+                if(err2) {
+                  reject({ 'code': 500, 'msg': "用户表删除失败!" });
+                } else {
+                  resolve({'code': 200,'msg':'删除成功!'})
+                }
+              })
+            }
+          }
+        })
+        c.release();
+      }
+    })
+  })
+}
 
 module.exports = {
   fileUpload,
   getFileList,
-  getLastFileList
+  getLastFileList,
+  getDangerFiles,
+  updateDangerFiles
 }

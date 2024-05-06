@@ -3,8 +3,8 @@ const fs = require("fs");
 
 const router = express.Router();
 const { login } = require("./login");
-const { getAllSpace, getPriceData, getAllVip } = require("./vip");
-const { fileUpload, getFileList, getLastFileList } = require("./file");
+const { getAllSpace, getPriceData, getAllVip, updateVipOptions } = require("./vip");
+const { fileUpload, getFileList, getLastFileList, getDangerFiles, updateDangerFiles } = require("./file");
 const { addFeedback, getFeedback } = require("./feedback");
 const {
   getAllUser,
@@ -105,6 +105,12 @@ router
       (err) => res.status(500).send(err)
     );
   })
+  .post("/manage/updateVip", (req, res) => {
+    updateVipOptions(req.body).then(
+      (data) => res.status(200).send(data),
+      (err) => res.status(500).send(err)
+    );
+  })
   .post("/manage/user/updateStatus", (req, res) => {
     const { id, status } = req.body;
     updateStatus(id, status).then(
@@ -131,6 +137,18 @@ router
       (data) => res.status(200).send(data),
       (err) => res.status(500).send(err)
     );
-  });
+  })
+  .post("/manage/getDangerFiles", (req, res) => {
+    getDangerFiles().then(
+      (data) => res.status(200).send(data),
+      (err) => res.status(500).send(err)
+    );
+  })
+  .post("/manage/updateDangerFiles", (req, res) => {
+    updateDangerFiles(req.body).then(
+      (data) => res.status(200).send(data),
+      (err) => res.status(500).send(err)
+    );
+  })
 
 module.exports = router;

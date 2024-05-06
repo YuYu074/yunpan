@@ -85,8 +85,34 @@ function getPriceData(vip_name) {
   })
 }
 
+/**
+ * @description updateVipOptions
+ * @param {object} params
+ * @returns {Promise} Promise
+ */
+function updateVipOptions(params) {
+  return new Promise((resolve, reject) => {
+    Pool.getConnection((err, c) => {
+      if (err) {
+        reject({ 'code': 500, 'msg': "数据库连接失败!" });
+      } else {
+        const sql = `UPDATE \`viptab\` SET vip_price_month = IFNULL(${params.vip_price_month || null}, vip_price_month),vip_price_quarter = IFNULL(${params.vip_price_quarter || null}, vip_price_quarter),vip_price_year = IFNULL(${params.vip_price_year || null}, vip_price_year),vip_space = IFNULL(${params.vip_space || null}, vip_space) WHERE id=${params.id};`
+        c.query(sql ,(err,data)=>{
+          if(err){
+            reject({'code': 500,'msg':'修改失败'});
+          }else{
+            resolve({'code': 200,'msg':'修改成功','data':data});
+          }
+          c.release();
+        });
+      }
+    });
+  })
+}
+
 module.exports = {
   getAllSpace,
   getPriceData,
-  getAllVip
+  getAllVip,
+  updateVipOptions
 }

@@ -42,7 +42,7 @@ server.use(Multer({ dest: "./allFiles" }).any());
 //     next()
 //   })
 // })
-// server.use("/login", loginRouter);
+server.use("/login", loginRouter);
 server.use(router)
 server.use(managerouter)
 

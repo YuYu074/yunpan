@@ -20,12 +20,12 @@
               修改密码
             </n-button>
           </div>
-          <div class="mt-16 flex items-center">
+          <!-- <div class="mt-16 flex items-center">
             <n-button type="primary" ghost @click="avatarModalRef.open()">更改头像</n-button>
             <span class="ml-12 opacity-60">
               修改头像只支持在线链接，不提供上传图片功能，如有需要可自行对接！
             </span>
-          </div>
+          </div> -->
         </div>
       </n-space>
     </n-card>

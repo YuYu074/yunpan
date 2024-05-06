@@ -1,92 +1,121 @@
-<!--------------------------------
- - @Author: Ronnie Zhang
- - @LastEditor: Ronnie Zhang
- - @LastEditTime: 2023/12/05 21:28:02
- - @Email: zclzone@outlook.com
- - Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- --------------------------------->
-
 <template>
   <CommonPage>
-    <n-upload
-      class="mx-auto w-[75%] p-20 text-center"
-      :custom-request="handleUpload"
-      :show-file-list="false"
-      accept=".png,.jpg,.jpeg"
-      @before-upload="onBeforeUpload"
-    >
-      <n-upload-dragger>
-        <div class="h-150 f-c-c flex-col">
-          <i class="i-mdi:upload mb-12 text-68 color-primary" />
-          <n-text class="text-14 color-gray">点击或者拖动文件到该区域来上传</n-text>
-        </div>
-      </n-upload-dragger>
-    </n-upload>
-
-    <n-card v-if="imgList && imgList.length" class="mt-16 items-center">
-      <n-image-group>
-        <n-space justify="space-between" align="center">
-          <n-card v-for="(item, index) in imgList" :key="index" class="w-280 hover:card-shadow">
-            <div class="h-160 f-c-c">
-              <n-image width="200" :src="item.url" />
-            </div>
-            <n-space class="mt-16" justify="space-evenly">
-              <n-button dashed type="primary" @click="copy(item.url)">url</n-button>
-              <n-button dashed type="primary" @click="copy(`![${item.fileName}](${item.url})`)">
-                MD
-              </n-button>
-              <n-button
-                dashed
-                type="primary"
-                @click="copy(`&lt;img src=&quot;${item.url}&quot; /&gt;`)"
-              >
-                img
-              </n-button>
-            </n-space>
-          </n-card>
-          <div v-for="i in 4" :key="i" class="w-280" />
-        </n-space>
-      </n-image-group>
-    </n-card>
+    <MeCrud ref="$table" :scroll-x="1200" :columns="columns" :get-data="api.read"></MeCrud>
+    <el-dialog v-model="dialogFormVisible" title="修改权限" width="500">
+      <el-tree
+        style="max-width: 600px"
+        :data="dialogFormData"
+        :props="dialogFormProps"
+        node-key="id"
+        :default-checked-keys="dialogFormCheckIndex"
+        show-checkbox
+        @check-change="handleCheckChange"
+      />
+    </el-dialog>
   </CommonPage>
 </template>
 
 <script setup>
-import { useClipboard } from '@vueuse/core'
-defineOptions({ name: 'ImgUpload' })
+import { NButton } from 'naive-ui'
+import { MeCrud, MeModal } from '@/components'
+import { useCrud } from '@/composables'
+import api from './api'
 
-const { copy, copied } = useClipboard()
+defineOptions({ name: 'UserMgt' })
 
-const imgList = reactive([
-  { url: 'https://cdn.isme.top/images/5c23d52f880511ebb6edd017c2d2eca2.jpg' },
-  { url: 'https://cdn.isme.top/images/5c23d52f880511ebb6edd017c2d2eca2.jpg' },
-  { url: 'https://cdn.isme.top/images/5c23d52f880511ebb6edd017c2d2eca2.jpg' },
-  { url: 'https://cdn.isme.top/images/5c23d52f880511ebb6edd017c2d2eca2.jpg' },
-])
+const $table = ref(null)
 
-watch(copied, (val) => {
-  val && $message.success('已复制到剪切板')
+onMounted(() => {
+  $table.value?.handleSearch()
 })
 
-function onBeforeUpload({ file }) {
-  if (!file.file?.type.startsWith('image/')) {
-    $message.error('只能上传图片')
-    return false
-  }
-  return true
-}
+const columns = [
+  {
+    title: '管理员id',
+    key: 'id',
+    width: 150,
+    ellipsis: { tooltip: true },
+  },
+  {
+    title: '管理员等级',
+    key: 'manage_name',
+    width: 100,
+    ellipsis: { tooltip: true },
+  },
 
-async function handleUpload({ file, onFinish }) {
-  if (!file || !file.type) {
-    $message.error('请选择文件')
-  }
+  // {
+  //   title: '三个月定价',
+  //   key: 'vip_price_quarter',
+  //   width: 150,
+  //   ellipsis: { tooltip: true },
+  // },
+  // {
+  //   title: '一年定价',
+  //   key: 'vip_price_year',
+  //   width: 150,
+  //   ellipsis: { tooltip: true },
+  // },
+  {
+    title: '操作',
+    key: 'actions',
+    width: 80,
+    align: 'right',
+    fixed: 'right',
+    hideInExcel: true,
+    render(row) {
+      return [
+        h(
+          NButton,
+          {
+            size: 'small',
+            type: 'primary',
+            secondary: true,
+            onClick: () => handleOpenRolesSet(row),
+          },
+          {
+            default: () => '修改权限',
+            icon: () => h('i', { class: 'i-carbon:user-role text-14' }),
+          }
+        ),
+      ]
+    },
+  },
+]
 
-  // 模拟上传
-  $message.loading('上传中...')
-  setTimeout(() => {
-    $message.success('上传成功')
-    imgList.push({ fileName: file.name, url: URL.createObjectURL(file.file) })
-    onFinish()
-  }, 1500)
+const dialogFormVisible = ref(false)
+const dialogFormProps = ref({
+  children: 'children',
+  label: 'label',
+  disabled: 'disabled',
+})
+const dialogFormCheckIndex = ref([])
+const dialogFormData = ref([])
+async function handleOpenRolesSet(row) {
+  console.log(row);
+  let res = (await api.getRolePermissions(13720973952)).data
+  console.log(res)
+  dialogFormData.value = []
+  res.forEach((i) => {
+    if (i.function_index == '1') {
+      dialogFormData.value.push({
+        id: +i.id,
+        label: i.function_name,
+        children: [],
+      })
+    } else {
+      dialogFormData.value.forEach((o) => {
+        if (+i.parent_id === o.id) {
+          o.children.push({
+            id: +i.id,
+            label: i.function_name,
+            children: [],
+          })
+        }
+      })
+    }
+  })
+  // dialogFormCheckIndex.value = [1,2,3,4,5,7,8,9,10,11,15,16]
+  dialogFormCheckIndex.value = [1,2,3,4,5,7,9,10,11,16]
+  dialogFormVisible.value = true
 }
 </script>
