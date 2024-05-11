@@ -14,14 +14,14 @@
     </view>
   </view>
 
-  <view class="row">
+  <!-- <view class="row">
     <view class="row-add">
       <view class="row-addCol" wx:for="{{ addList }}" wx:key="index" bindtap="jump(item.link)">
         <van-icon name="{{item.icon}}" color="{{item.color}}" size="30px"/>
         <view class="row-add-title">{{ item.title }}</view>
       </view>
     </view>
-  </view>
+  </view> -->
 
   <view class="function-wrap">
       <van-cell
@@ -48,9 +48,8 @@
       const user = mpx.getStorageSync("user")
 
       const functionalList = [
-        { title: '设置', link: '/package/pages/options/index' },
+        // { title: '设置', link: '/package/pages/options/index' },
         { title: '客服中心', link: 'customerservice' },
-        // { title: '更多服务', link: '/packageRMS/pages/user/changestore' },
         { title: '问题反馈', link: '/package/pages/feedback/index' },
         { title: '退出登录', link: 'loginout' }
       ]

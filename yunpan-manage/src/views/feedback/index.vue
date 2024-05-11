@@ -1,6 +1,23 @@
 <template>
   <CommonPage>
-    <MeCrud ref="$table" :scroll-x="1200" :columns="columns" :get-data="api.read"></MeCrud>
+    <MeCrud
+      v-model:query-items="queryItems"
+      ref="$table"
+      :scroll-x="1200"
+      :columns="columns"
+      :get-data="api.getAllFeedback"
+    >
+    <MeQueryItem label="状态" :label-width="50">
+        <n-select
+          v-model:value="queryItems.feedstatus"
+          clearable
+          :options="[
+            { label: '已回复', value: 1 },
+            { label: '待回复', value: 0 },
+          ]"
+        />
+      </MeQueryItem>
+  </MeCrud>
 
     <MeModal ref="modalRef" width="520px">
       <n-form
@@ -12,48 +29,26 @@
         :disabled="modalAction === 'view'"
       >
         <n-form-item
-          label="会员名称"
-          path="vip_name"
+          label="反馈内容"
+          path="content"
           :rule="{
             required: true,
             message: '请输入会员名称',
             trigger: ['input', 'blur'],
           }"
         >
-          <n-input v-model:value="modalForm.vip_name" :disabled="modalAction !== 'add'" />
+          <n-input v-model:value="modalForm.content" :disabled="modalAction !== 'add'" />
         </n-form-item>
         <n-form-item
-          label="一个月定价"
-          path="vip_price_month"
+          label="反馈回复"
+          path="result"
           :rule="{
             required: true,
-            message: '请输入一个月定价',
+            message: '请输入反馈回复',
             trigger: ['input', 'blur'],
           }"
         >
-          <n-input v-model:value="modalForm.vip_price_month" />
-        </n-form-item>
-        <n-form-item
-          label="三个月定价"
-          path="vip_price_quarter"
-          :rule="{
-            required: true,
-            message: '请输入三个月定价',
-            trigger: ['input', 'blur'],
-          }"
-        >
-          <n-input v-model:value="modalForm.vip_price_quarter" />
-        </n-form-item>
-        <n-form-item
-          label="一年定价"
-          path="vip_price_year"
-          :rule="{
-            required: true,
-            message: '请输入一年定价',
-            trigger: ['input', 'blur'],
-          }"
-        >
-          <n-input v-model:value="modalForm.vip_price_year" />
+          <n-input v-model:value="modalForm.result" />
         </n-form-item>
       </n-form>
     </MeModal>
@@ -62,13 +57,16 @@
 
 <script setup>
 import { NButton } from 'naive-ui'
-import { MeCrud, MeModal } from '@/components'
+import { MeCrud, MeQueryItem, MeModal } from '@/components'
 import { useCrud } from '@/composables'
-import api from '../user/api'
+import api from './api'
+import dayjs from 'dayjs'
 
 defineOptions({ name: 'UserMgt' })
 
 const $table = ref(null)
+/** QueryBar筛选参数（可选） */
+const queryItems = ref({})
 
 onMounted(() => {
   $table.value?.handleSearch()
@@ -76,28 +74,40 @@ onMounted(() => {
 
 const columns = [
   {
-    title: '会员名称',
-    key: 'vip_name',
+    title: '用户名称',
+    key: 'user_name',
     width: 100,
     ellipsis: { tooltip: true },
   },
   {
-    title: '一个月定价',
-    key: 'vip_price_month',
+    title: '用户手机号',
+    key: 'user_phone',
     width: 150,
     ellipsis: { tooltip: true },
   },
   {
-    title: '三个月定价',
-    key: 'vip_price_quarter',
+    title: '反馈时间',
+    key: 'feed_time',
+    width: 150,
+    ellipsis: { tooltip: true },
+    render({ feed_time }) {
+      return dayjs(feed_time).format('YYYY-MM-DD HH:mm:ss')
+    },
+  },
+  {
+    title: '反馈内容',
+    key: 'content',
     width: 150,
     ellipsis: { tooltip: true },
   },
   {
-    title: '一年定价',
-    key: 'vip_price_year',
+    title: '反馈结果',
+    key: 'result',
     width: 150,
     ellipsis: { tooltip: true },
+    render({ result }) {
+      return result ? result : '等待回复'
+    },
   },
   {
     title: '操作',
@@ -117,7 +127,7 @@ const columns = [
             onClick: () => handleOpenRolesSet(row),
           },
           {
-            default: () => '更改价格',
+            default: () => '处理反馈',
             icon: () => h('i', { class: 'i-carbon:user-role text-14' }),
           }
         ),
@@ -127,15 +137,15 @@ const columns = [
 ]
 
 function handleOpenRolesSet(row) {
-  if (row.vip_name == '普通会员') {
-    $message.warning('普通会员不能修改价格')
+  if (row.feedstatus != 0) {
+    $message.warning('该反馈已处理')
     return
   }
-  const { id, vip_name, vip_price_month, vip_price_quarter, vip_price_year } = row
+  const { id, content, result } = row
   handleOpen({
     action: 'setRole',
-    title: '更改价格',
-    row: { id, vip_name, vip_price_month, vip_price_quarter, vip_price_year },
+    title: '处理反馈',
+    row: { id, content, result },
     onOk: onSave,
   })
 }

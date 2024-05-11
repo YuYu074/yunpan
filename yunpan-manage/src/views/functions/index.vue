@@ -3,11 +3,12 @@
     <MeCrud ref="$table" :scroll-x="1200" :columns="columns" :get-data="api.read"></MeCrud>
     <el-dialog v-model="dialogFormVisible" title="修改权限" width="500">
       <el-tree
+        ref="eltreeRef"
         style="max-width: 600px"
         :data="dialogFormData"
         :props="dialogFormProps"
         node-key="id"
-        :default-checked-keys="dialogFormCheckIndex"
+        :default-checked-keys="[...dialogFormCheckIndex]"
         show-checkbox
         @check-change="handleCheckChange"
       />
@@ -20,10 +21,12 @@ import { NButton } from 'naive-ui'
 import { MeCrud, MeModal } from '@/components'
 import { useCrud } from '@/composables'
 import api from './api'
+import { nextTick } from 'vue'
 
 defineOptions({ name: 'UserMgt' })
 
 const $table = ref(null)
+const eltreeRef = ref(null)
 
 onMounted(() => {
   $table.value?.handleSearch()
@@ -91,6 +94,10 @@ const dialogFormProps = ref({
 const dialogFormCheckIndex = ref([])
 const dialogFormData = ref([])
 async function handleOpenRolesSet(row) {
+  if(row.manage_name == '超级管理员') {
+    $message.warning('不能修改超级管理员的权限')
+    return
+  }
   console.log(row);
   let res = (await api.getRolePermissions(13720973952)).data
   console.log(res)
@@ -114,8 +121,17 @@ async function handleOpenRolesSet(row) {
       })
     }
   })
-  // dialogFormCheckIndex.value = [1,2,3,4,5,7,8,9,10,11,15,16]
-  dialogFormCheckIndex.value = [1,2,3,4,5,7,9,10,11,16]
+  if(+row.id == 1) {
+    dialogFormCheckIndex.value = [1,2,3,4,5,7,8,9,10,11,13,14,16,17]
+  }else if(+row.id == 2) {
+    dialogFormCheckIndex.value = [2,3,5,7,9,11,16]
+  }else if (+row.id == 3) {
+    dialogFormCheckIndex.value = [2,5,9,11]
+  }
+  nextTick(() => {
+    eltreeRef.value.setCurrentKey(dialogFormCheckIndex.value);
+  });
+  console.log(dialogFormCheckIndex.value);
   dialogFormVisible.value = true
 }
 </script>

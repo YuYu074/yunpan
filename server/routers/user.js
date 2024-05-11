@@ -63,7 +63,7 @@ function addUser(params) {
           }else{
             let nowTime = new Date().toLocaleDateString()+' '+new Date().toLocaleTimeString();
             let vip_name = ['普通会员', '黄金会员', '白金会员', '黑金会员'][+params.roleIds - 1]
-            c.query(`INSERT INTO \`user\` (user_name, user_signtime, user_phone, user_password, user_key, vip_id, vip_name, vip_ddl, used_space, status, email, sexy) VALUES ("${params.username}", "${nowTime}", "${params.userphone}", "${params.password}", "abc", "${params.roleIds}", "${vip_name}", null, "0", "1", null, null);`, (err2, data2) => {
+            c.query(`INSERT INTO \`user\` (user_name, user_signtime, user_phone, user_password, user_key, vip_id, vip_name, vip_ddl, used_space, status, email, sexy) VALUES ("${params.username}", "${nowTime}", "${params.userphone}", "${params.password}", "abc", "${params.roleIds}", "${vip_name}", "${params.vip_ddl}", "0", "1", null, null);`, (err2, data2) => {
               if(err2){
                 reject({'code': 500,'message':'新建用户失败!'});
               }else{

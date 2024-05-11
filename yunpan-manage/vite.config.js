@@ -1,11 +1,3 @@
-/**********************************
- * @Author: Ronnie Zhang
- * @LastEditor: Ronnie Zhang
- * @LastEditTime: 2023/12/05 21:31:02
- * @Email: zclzone@outlook.com
- * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
- **********************************/
-
 import path from 'path'
 import { defineConfig, loadEnv } from 'vite'
 import Vue from '@vitejs/plugin-vue'
@@ -59,8 +51,8 @@ export default defineConfig(({ command, mode }) => {
       open: false,
       proxy: {
         '/manage': {
-          target: 'http://127.0.0.1:3000',
-          // target: 'http://47.120.37.146:3000',
+          // target: 'http://127.0.0.1:3000',
+          target: 'http://47.120.37.146:3000',
           // target: 'https://mock.apifox.com/m1/3776410-0-default/',
           changeOrigin: true,
           // rewrite: (path) => path.replace(new RegExp('^/manage'), ''),

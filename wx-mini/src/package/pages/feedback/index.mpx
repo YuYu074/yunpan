@@ -6,7 +6,7 @@
           <van-cell title="反馈时间" value="{{item.thisTime}}" />
           <van-cell title="反馈内容" value="{{item.content}}" />
           <van-cell title="反馈状态" value="{{item.statusText}}" />
-          <van-cell title="反馈结果" wx:if="{{item.status != '0'}}" value="{{item.result}}" />
+          <van-cell title="反馈结果" wx:if="{{item.feedstatus != '0'}}" value="{{item.result}}" />
         </van-cell-group>
       </view>
     </view>
@@ -37,7 +37,7 @@
         })
         list.value = (res.data.data || []).map(item => ({
           ...item,
-          statusText: statusMap[+item.status],
+          statusText: statusMap[+item.feedstatus],
           thisTime: dayjs(item.thisTime).format('YYYY-MM-DD HH:mm:ss')
         }))
       }

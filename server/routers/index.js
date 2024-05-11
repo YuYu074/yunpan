@@ -5,7 +5,7 @@ const router = express.Router();
 const { login } = require("./login");
 const { getAllSpace, getPriceData, getAllVip, updateVipOptions } = require("./vip");
 const { fileUpload, getFileList, getLastFileList, getDangerFiles, updateDangerFiles } = require("./file");
-const { addFeedback, getFeedback } = require("./feedback");
+const { addFeedback, getFeedback, getAllFeedback, updateFeedback } = require("./feedback");
 const {
   getAllUser,
   addUser,
@@ -86,6 +86,19 @@ router
       (data) => res.status(200).send(data),
       (err) => res.status(500).send(err)
     );
+  })
+  .post("/manage/getAllFeedback", (req, res) => {
+    console.log(req.body);
+    getAllFeedback(req.body).then(
+      (data) => res.status(200).send(data),
+      (err) => res.status(500).send(err)
+    )
+  })
+  .post("/manage/updateFeedback", (req, res) => {
+    updateFeedback(req.body).then(
+      (data) => res.status(200).send(data),
+      (err) => res.status(500).send(err)
+    )
   })
   .post("/manage/user/read", (req, res) => {
     getAllUser(req.body).then(

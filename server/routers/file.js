@@ -44,13 +44,13 @@ function fileUpload(files, userid) {
                 }
                 //写入数据库
                 let inputSql1 = `INSERT INTO \`${data[0].user_name}\` (file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0");`
-                let inputSql2 = `INSERT INTO \`allfiles\` (user_id, file_name, hash_name, show_name, last_time, type, size, download) VALUES ("${userid}", "${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0");`
+                let inputSql2 = `INSERT INTO \`allfiles\` (user_id, file_name, hash_name, show_name, last_time, type, size, download, danger) VALUES ("${userid}", "${files.originalname}", "${hashName}", "${files.showName}", "${thisTime}", "${files.type}", "${files.size}", "0", '0');`
                 c.query(inputSql1, (err3, data3)=>{
-                  if(err) {
+                  if(err3) {
                     reject({ 'code': 500, 'msg': "数据库连接失败" });
                   } else {
                     c.query(inputSql2, (err4, data4)=>{
-                      if(err) {
+                      if(err4) {
                         reject({ 'code': 500, 'msg': "数据库连接失败" });
                       } else {
                         resolve({'code': 200,'msg':'上传成功！'})
@@ -85,7 +85,7 @@ function getFileList(key, userid, type, sort) {
       } else {
         c.query('SELECT user_name FROM `user` WHERE id="' + userid + '";', (err, data)=>{
           console.log(data[0].user_name);
-          !err & c.query('SELECT * FROM `' + data[0].user_name + '`;', (err2, data2)=>{
+          !err & c.query(`SELECT * FROM \`${data[0].user_name}\` WHERE file_name LIKE '%${key}%';`, (err2, data2)=>{
             if(err) {
               reject({ 'code': 500, 'msg': "数据库连接失败" });
             } else {

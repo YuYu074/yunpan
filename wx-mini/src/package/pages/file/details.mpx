@@ -69,7 +69,28 @@
           }
         })
       }
-      const deleteFile = () => {}
+      const deleteFile = () => {
+        request({
+          url: `${api.baseUrl}/manage/updateDangerFiles`,
+          data: {
+            userid: mpx.getStorageSync('user').id,
+            hash_name: pageInfo.value.hash_name || '',
+            user_name: mpx.getStorageSync('user').user_name,
+            result: 1
+          }
+        }).then(res => {
+          if(res) {
+            mpx.showModal({
+              title: '提示',
+              content: '删除成功',
+              showCancel: false,
+              success(res){
+                mpx.navigateBack()
+              }
+            })
+          }
+        })
+      }
       const previewFile = () => {
         wx.downloadFile({
           url: `${api.baseUrl}/downFile/${pageInfo.value.hash_name}`,

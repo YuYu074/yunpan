@@ -1,16 +1,16 @@
 <template>
   <CommonPage>
     <div class="mt-12 flex">
-      <n-card class="ml-12 w-50%" title="🛠️ 技术栈" segmented>
-        <VChart :option="skillOption" autoresize />
+      <n-card class="ml-12 w-50%" title="会员等级" segmented>
+        <VChart :option="skillOption" :init-options="{ height: 400 }" autoresize />
       </n-card>
 
-      <n-card class="ml-12 w-50%" title="🛠️ 技术栈" segmented>
-        <VChart :option="skillOption" autoresize />
+      <n-card class="ml-12 w-50%" title="用户空间使用量" segmented>
+        <VChart :option="skillOption2" :init-options="{ height: 400 }" autoresize />
       </n-card>
     </div>
 
-    <n-card class="mt-12" title="⚡️ 用户趋势" segmented>
+    <n-card class="mt-12" title="⚡️ 活跃用户趋势" segmented>
       <VChart :option="trendOption" :init-options="{ height: 400 }" autoresize />
     </n-card>
   </CommonPage>
@@ -120,11 +120,55 @@ const skillOption = {
         show: false,
       },
       data: [
-        { value: 38.5, name: 'Vue' },
-        { value: 37.0, name: 'JavaScript' },
-        { value: 6.5, name: 'CSS' },
-        { value: 6.2, name: 'HTML' },
-        { value: 1.8, name: 'Other' },
+        { value: 38.5, name: '普通会员' },
+        { value: 37.0, name: '黄金会员' },
+        { value: 12.7, name: '白金会员' },
+        { value: 1.8, name: '黑金会员' }
+      ],
+    },
+  ],
+}
+
+const skillOption2 = {
+  tooltip: {
+    trigger: 'item',
+    formatter({ name, value }) {
+      return `${name} ${value}%`
+    },
+  },
+  legend: {
+    left: 'center',
+  },
+  series: [
+    {
+      top: '12%',
+      type: 'pie',
+      radius: ['35%', '90%'],
+      avoidLabelOverlap: true,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2,
+      },
+      label: {
+        show: false,
+        position: 'center',
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 36,
+          fontWeight: 'bold',
+        },
+      },
+      labelLine: {
+        show: false,
+      },
+      data: [
+        { value: 22, name: '< 1GB' },
+        { value: 36, name: '1GB - 5GB' },
+        { value: 29, name: '5GB - 20GB' },
+        { value: 13, name: '> 20GB' }
       ],
     },
   ],

@@ -17,9 +17,9 @@
     </view>
     <files-list listdata="{{listdata}}"></files-list>
     <!-- 传输列表按钮 -->
-    <view class="upload-btn2" bindtap="showUpload">
+    <!-- <view class="upload-btn2" bindtap="showUpload">
       <van-icon name="sort" size="50" color="#3AB1EF"/>
-    </view>
+    </view> -->
     <!-- 上传按钮 -->
     <view class="upload-btn" bindtap="upload">
       <van-icon name="add" size="80" color="#3AB1EF"/>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import mpx, { ref, onMounted, reactive, createPage, computed, onLoad } from '@mpxjs/core'
+  import mpx, { ref, onMounted, reactive, createPage, computed, onLoad, onShow } from '@mpxjs/core'
   import { api, request, tabbar, uploadFile } from '@/service'
   import { useSetupStore } from '@/store'
   import dayjs from 'dayjs'
@@ -146,13 +146,14 @@
             userid: mpx.getStorageSync('user').id,
             key: searchKey.value || '',
             type: typeValue.value || '',
-            sort: sortValue.value || ''
+            sort: sortValue.value || '2'
           }
         })
         listdata.value = res.data.data.map(i => ({
           ...i,
           icon: iconList[i.type],
-          formatSize: formatSize(i.size)
+          formatSize: formatSize(i.size),
+          last_time:dayjs(i.last_time).format("YYYY-MM-DD HH:mm:ss")
         }))
       }
 
@@ -254,6 +255,7 @@
 
       return {
         listdata,
+        getFileList,
         searchKey,
         typeOption,
         sortOption,
@@ -264,7 +266,9 @@
         show,
         showUpload,
         uploadingList,
-        downloadingList
+        downloadingList,
+        onSearchChange,
+        onSearch
       }
     }
   })
