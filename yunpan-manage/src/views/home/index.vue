@@ -13,7 +13,6 @@
         </div>
 
         <p class="mt-28 text-14 opacity-60">一个人几乎可以在任何他怀有无限热忱的事情上成功。</p>
-        <p class="mt-12 text-right text-12 opacity-40">—— 查尔斯·史考伯</p>
       </n-card>
       <n-card class="ml-12 w-70%" title="✨ 欢迎使用 小鱼网盘后台管理系统V2.0">
 

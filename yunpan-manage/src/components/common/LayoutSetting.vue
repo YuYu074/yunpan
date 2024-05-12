@@ -81,9 +81,6 @@
           </n-button>
         </div>
       </n-space>
-      <p class="mt-16 opacity-50">
-        注: 此设置仅对未设置layout或者设置成跟随系统的页面有效，菜单设置的layout优先级最高
-      </p>
     </MeModal>
   </div>
 </template>
