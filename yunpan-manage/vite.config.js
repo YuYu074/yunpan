@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode }) => {
       proxy: {
         '/manage': {
           // target: 'http://127.0.0.1:3000',
-          target: 'http://47.120.37.146:3000',
+          target: 'http://47.120.31.22:3000',
           // target: 'https://mock.apifox.com/m1/3776410-0-default/',
           changeOrigin: true,
           // rewrite: (path) => path.replace(new RegExp('^/manage'), ''),

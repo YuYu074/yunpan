@@ -5,7 +5,7 @@ const path = require('path');
 const utils = require('../utils')
 
 const Pool = mysql.createPool({
-  host: "47.120.37.146",
+  host: "47.120.31.22",
   user: "yuyang",
   password: "Yuyang000@",
   database: "yunpan",
